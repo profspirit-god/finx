@@ -9,7 +9,7 @@ import {
   verifyPassword,
   verifyPin,
 } from '../api/user.repo';
-import type { PersonalizationAnswers } from '@/types/user';
+import type { PersonalizeInput } from '../types';
 import { getDB } from '@/lib/db/idb';
 
 const SESSION_KEY = 'finx_unlocked';
@@ -21,7 +21,7 @@ type AuthStore = {
   unlock: (pin: string) => Promise<boolean>;
   lock: () => void;
   loginWithPassword: (password: string) => Promise<boolean>;
-  completePersonalization: (input: PersonalizationAnswers) => Promise<void>;
+  completePersonalization: (input: PersonalizeInput) => Promise<void>
   changePin: (currentPin: string, newPin: string) => Promise<boolean>;
   reset: () => Promise<void>;
 };
