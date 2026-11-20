@@ -1,0 +1,30 @@
+:root {
+  --bg: #0A0A0A;
+  --bg-soft: #111111;
+  --text: #FFFFFF;
+  --text-dim: rgba(255,255,255,0.68);
+  --text-mute: rgba(255,255,255,0.45);
+
+  --gold: #F5B800;
+  --gold-soft: rgba(245,184,0,0.14);
+  --gold-line: rgba(245,184,0,0.35);
+
+  --sys-red: #FF5C5C;
+  --sys-orange: #FF9F45;
+  --sys-yellow: #FFD84D;
+  --sys-green: #4ADE80;
+  --sys-blue: #5CA8FF;
+
+  --line: rgba(255,255,255,0.10);
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-blur: 18px;
+
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-glass: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+
+  --sidebar-w: 68px;
+  --sidebar-w-open: 240px;
+  --topbar-h: 60px;
+}
