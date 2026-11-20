@@ -22,6 +22,17 @@ Root cause
 
 ## Entries
 
+### BUG-20261120-07 — AuthProvider not mounted, app stuck on Loading
+
+- Status: fixed
+- Version found: 1.1.0.0 (Phase A)
+- Version fixed: 1.1.0.0 (Phase D)
+- Files touched: `src/main.tsx`
+- Symptoms: app rendered "Loading…" indefinitely on every route
+- Root cause: `AuthProvider` was created in Phase A but never added to `main.tsx`'s provider stack, so `useAuthStore.initialize()` never ran and store stayed at `status: 'loading'`
+- Fix: wrapped `<BrowserRouter>` with `<AuthProvider>` in `main.tsx`
+- Regression test: yes — smoke test A (first-run flow)
+
 ### BUG-20261120-06 — `Uint8Array` not assignable to `BufferSource` (PBKDF2)
 
 - Status: fixed
