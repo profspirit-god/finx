@@ -1,6 +1,5 @@
 import type { ReactElement } from 'react';
 
-/** Placeholder page component. Replaced by real features in later steps. */
 function Placeholder({ label }: { label: string }) {
   return (
     <div className="p-8">
