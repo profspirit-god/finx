@@ -22,6 +22,17 @@ Root cause
 
 ## Entries
 
+### BUG-20261120-08 — PersonalizeInput wrong import path
+
+- Status: fixed
+- Version found: 1.1.0.0 (Phase C)
+- Version fixed: 1.1.0.0 (Phase C)
+- Files touched: `src/features/auth/state/auth.store.ts`
+- Symptoms: `TS2305` — `PersonalizeInput` not exported from `@/types/user`
+- Root cause: type lives in `src/features/auth/types.ts`, not `src/types/user.ts`; import path was wrong
+- Fix: changed to `from '../types'`
+- Regression test: no (build is the check)
+
 ### BUG-20261120-07 — AuthProvider not mounted, app stuck on Loading
 
 - Status: fixed
