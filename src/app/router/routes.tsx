@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { LockScreen } from '@/features/lock';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -18,4 +19,6 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/ai',         element: <Placeholder label="AI Assistant" /> },
   { path: '/settings',   element: <Placeholder label="Settings" /> },
   { path: '/help',       element: <Placeholder label="Help" /> },
+  { path: '/lock',       element: <LockScreen /> },
+  { path: '/onboarding', element: <Placeholder label="Onboarding (Phase C)" /> },
 ];
