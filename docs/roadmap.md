@@ -4,7 +4,8 @@
 
 - [v1.0.0.0 — Scaffold](#v1000)
 - [v1.0.1.0 — Design System](#v1010)
-- [v1.0.2.0 — Storage & Providers](#v1020)
+- [v1.0.2.0 — Design System: Primitives](#v1020)
+- [v1.0.3.0 — Storage & Providers](#v1030)
 - [v1.1.0.0 — Onboarding & Lock](#v1100)
 - [v1.2.0.0 — Wallets](#v1200)
 - [v1.3.0.0 — Records](#v1300)
@@ -20,11 +21,15 @@ Vite + TS + Tailwind + PWA + routing + shell + sidebar + docs.
 
 ## v1.0.1.0 — Design System
 
-UI primitives: Button, Card, GlassPanel, Input, Select, Tooltip, Toast, Notice, Dialog, Skeleton, ProgressBar, EmptyState, ErrorState, Tabs, Switch.
+Reserved for the initial design-system draft; folded into v1.0.2.0.
 
-## v1.0.2.0 — Storage & Providers
+## v1.0.2.0 — Design System: Primitives
 
-idb schema, Zustand stores, bootstrap, providers, ErrorBoundary.
+15 primitives in `src/ui/`: Button, Card, GlassPanel, Skeleton, Input, Select, Switch, Tabs, Tooltip, Dialog, Notice, Toast, ProgressBar, EmptyState, ErrorState. Plus Icon and barrel export.
+
+## v1.0.3.0 — Storage & Providers
+
+idb schema, Zustand stores, bootstrap, providers, ErrorBoundary. `npm audit fix` cleanup pass.
 
 ## v1.1.0.0 — Onboarding & Lock
 
