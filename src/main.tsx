@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   MotionProvider,
   ErrorBoundary,
+  AuthProvider,
 } from '@/app/providers';
 import { initDB } from '@/app/bootstrap/initDB';
 import { initSeed } from '@/app/bootstrap/initSeed';
@@ -33,9 +34,11 @@ async function bootstrap() {
             <ToastProvider>
               <DialogProvider>
                 <TooltipProvider>
-                  <BrowserRouter>
-                    <App />
-                  </BrowserRouter>
+                  <AuthProvider>
+                    <BrowserRouter>
+                      <App />
+                    </BrowserRouter>
+                  </AuthProvider>
                 </TooltipProvider>
               </DialogProvider>
             </ToastProvider>

@@ -2,56 +2,72 @@
 
 ## Index
 
+- [v1.1.0.0](#v1100)
 - [v1.0.3.0](#v1030)
 - [v1.0.2.0](#v1020)
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
 
+## v1.1.0.0
+
+### Added
+
+- `src/features/auth/` — domain types (AuthState, SignupInput, PersonalizeInput), user repo (PBKDF2 hash/verify, create/get/updatePin/deleteUser), Zustand auth store (initialize, signup, unlock, lock, loginWithPassword, completePersonalization, changePin, reset)
+- `src/features/lock/` — PinPad (4-digit, dots, keys, auto-submit), LockScreen (full-screen, error state, attempts), usePin hook
+- `src/features/onboarding/` — 5-step wizard: Signup, Terms (with two-switch consent), PIN (create + confirm), Personalize (currency, track mode, income, savings), Finish
+- `src/app/providers/AuthProvider.tsx` — runs `useAuthStore.initialize()` on mount
+- `src/app/router/guards.tsx` — `AuthGuard` enforcing onboarding → lock → unlocked flow
+- Sidebar "Lock now" button
+- `/help` temporary reset-onboarding control for testing
+
+### Changed
+
+- `src/App.tsx` — full-screen routes (`/lock`, `/onboarding`) rendered outside `AppShell`; all routes wrapped in `AuthGuard`
+- `src/main.tsx` — `AuthProvider` added to provider stack inside `BrowserRouter`'s parent
+- Post-onboarding behavior: forced lock (alternative flow — user must enter just-set PIN before dashboard)
+
 ## v1.0.3.0
 
 ### Added
 
-- `src/types/` — User, Wallet, Record, Settings domain types
-- `src/lib/db/` — IndexedDB schema (5 stores: users, settings, wallets, records, receipts), idb wrapper, migrations stub
-- `src/lib/crypto/` — PBKDF2 hashing (210k iterations, SHA-256), salt generation, timing-safe compare, random ID/hex helpers
-- `src/lib/format/` — currency (minor-unit aware), date, number formatters
-- `src/lib/hooks/` — `useDebounce`, `useOnlineStatus`, `useReducedMotion`, `useMediaQuery`
-- `src/app/providers/` — `ThemeProvider` (dark-only for now), `ToastProvider` (wraps `@/ui`), `DialogProvider` (imperative API + `useDialog` hook), `TooltipProvider`, `MotionProvider` (respects reduced motion), `ErrorBoundary` (renders `ErrorState` with retry + help link)
-- `src/app/bootstrap/` — `initDB` (opens IndexedDB + runs migrations), `initSeed` (creates default `settings` record), `initPWA` (registers service worker via `virtual:pwa-register`)
-- `@types/node` in devDependencies
+- Domain types (User, Wallet, Record, Settings)
+- IndexedDB schema, idb wrapper, migrations stub
+- PBKDF2 crypto, format helpers, common hooks
+- Provider stack: Theme, Toast, Dialog, Tooltip, Motion, ErrorBoundary
+- Bootstrap: initDB, initSeed, initPWA
+- `@types/node` dev dependency
 
 ### Changed
 
-- `main.tsx` — async bootstrap: DB init → seed → render `<ErrorBoundary><ThemeProvider><MotionProvider><ToastProvider><DialogProvider><TooltipProvider><BrowserRouter><App/>` stack
-- `src/ui/ProgressBar.tsx` — added `animateOnMount` prop (default `true`); percent label counts up alongside the fill
+- `main.tsx` async bootstrap chain
+- `ProgressBar` — `animateOnMount` prop, count-up label
 
 ### Fixed
 
-- `hash.ts` — `fromHex` returns `ArrayBuffer` (TS 5.6 narrowed `Uint8Array.buffer` type, broke `deriveBits` call)
-- `idb.ts` — `stores` typed as `StoreName[]` literal union so `db.transaction()` type-checks
+- `hash.ts` — `fromHex` returns `ArrayBuffer` (TS 5.6 type narrowing)
+- `idb.ts` — `StoreName` literal union for `db.transaction()`
 
 ## v1.0.2.0
 
 ### Added
 
-- Design system primitives in `src/ui/`: Button, Card, GlassPanel, Skeleton + SkeletonText, Input, Select, Switch, Tabs, Tooltip, Dialog, Notice, Toast + ToastProvider + useToast, ProgressBar, EmptyState, ErrorState, Icon
+- 15 design system primitives in `src/ui/`
 - Barrel export at `src/ui/index.ts`
-- `.vscode/settings.json` to silence Tailwind CSS lint
-- `@types/node` dev dependency
+- `.vscode/settings.json` to silence Tailwind lint
 
 ### Changed
 
-- `tsconfig.json`: removed deprecated `baseUrl`; added `node` types; `vite.config.ts` included in compilation
-- `.gitignore`: added `tsconfig.tsbuildinfo`
+- `tsconfig.json` — removed deprecated `baseUrl`, added `node` types, included `vite.config.ts`
+- `.gitignore` — added `tsconfig.tsbuildinfo`
 
 ## v1.0.0.1
 
 ### Fixed
 
-- `package.json` restored (was empty in `v1.0.0.0` commit).
-- 26 scaffold files rewritten after the `v1.0.0.0` commit captured them as 0-byte truncations.
-- `.gitignore` completed: `dist/`, `dist-ssr/`, `.vite/`, `.env*`, `.DS_Store`, `*.log`, `coverage/`.
-- Added missing: `public/favicon.svg`, `public/manifest.webmanifest`, `src/ui/Icon.tsx`, `README.md`.
+- Restored `package.json` (was empty in v1.0.0.0)
+- 26 truncated scaffold files rewritten
+- `.gitignore` completed
+- Missing files created: `public/favicon.svg`, `public/manifest.webmanifest`, `src/ui/Icon.tsx`, `README.md`
 
 ## v1.0.0.0
 
@@ -60,7 +76,5 @@
 - Vite + React + TypeScript + Tailwind scaffold
 - PWA manifest + Workbox service worker
 - Routing skeleton with placeholder pages
-- AppShell, Sidebar (icon-rail hover-expand, mobile drawer), TopBar
-- Global styles: tokens, glass utilities, animations, skeleton shimmer
-- `Icon` wrapper for Lucide
-- Docs: README, ai-instructions, roadmap, changelog, buglog
+- AppShell, Sidebar, TopBar
+- Design tokens, glass utilities, animations

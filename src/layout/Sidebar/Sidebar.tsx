@@ -4,6 +4,8 @@ import {
   LayoutDashboard, Wallet, Receipt, Database, Sparkles, Settings, LifeBuoy, Menu, X,
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
+import { Lock } from 'lucide-react';
+import { useAuthStore } from '@/features/auth';
 
 const NAV = [
   { to: '/dashboard',  label: 'Dashboard',   Icon: LayoutDashboard },
@@ -19,6 +21,7 @@ export default function Sidebar() {
   const [hovered, setHovered] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const expanded = hovered;
+  const lock = useAuthStore((s) => s.lock);
 
   return (
     <>
@@ -72,6 +75,19 @@ export default function Sidebar() {
             <SidebarItem key={to} to={to} label={label} Icon={Icon} expanded={expanded} />
           ))}
         </nav>
+        <button
+        onClick={lock}
+        aria-label="Lock app"
+        className="mx-2 mb-2 flex items-center gap-3 h-11 px-3 rounded-xl text-[var(--text-dim)] hover:text-white hover:bg-white/5 transition-colors"
+        >
+        <Lock size={20} strokeWidth={1.75} className="shrink-0" />
+        <span className={[
+            'whitespace-nowrap text-sm font-medium transition-opacity duration-200',
+            expanded ? 'opacity-100' : 'opacity-0 pointer-events-none',
+        ].join(' ')}>
+            Lock now
+        </span>
+        </button>
         <div className="p-3 text-[10px] text-mute">
           {expanded ? 'v1.0.0.1 — profspirit-god studio' : '©'}
         </div>
