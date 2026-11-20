@@ -2,31 +2,39 @@
 
 ## Index
 
+- [v1.0.3.0](#v1030)
 - [v1.0.2.0](#v1020)
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
+
+## v1.0.3.0
+
+### Added
+
+- `src/types/` — User, Wallet, Record, Settings domain types
+- `src/lib/db/` — IndexedDB schema (5 stores: users, settings, wallets, records, receipts), idb wrapper, migrations stub
+- `src/lib/crypto/` — PBKDF2 hashing (210k iterations, SHA-256), salt generation, timing-safe compare, random ID/hex helpers
+- `src/lib/format/` — currency (minor-unit aware), date, number formatters
+- `src/lib/hooks/` — `useDebounce`, `useOnlineStatus`, `useReducedMotion`, `useMediaQuery`
+- `src/app/providers/` — `ThemeProvider` (dark-only for now), `ToastProvider` (wraps `@/ui`), `DialogProvider` (imperative API + `useDialog` hook), `TooltipProvider`, `MotionProvider` (respects reduced motion), `ErrorBoundary` (renders `ErrorState` with retry + help link)
+- `src/app/bootstrap/` — `initDB` (opens IndexedDB + runs migrations), `initSeed` (creates default `settings` record), `initPWA` (registers service worker via `virtual:pwa-register`)
+- `@types/node` in devDependencies
+
+### Changed
+
+- `main.tsx` — async bootstrap: DB init → seed → render `<ErrorBoundary><ThemeProvider><MotionProvider><ToastProvider><DialogProvider><TooltipProvider><BrowserRouter><App/>` stack
+- `src/ui/ProgressBar.tsx` — added `animateOnMount` prop (default `true`); percent label counts up alongside the fill
+
+### Fixed
+
+- `hash.ts` — `fromHex` returns `ArrayBuffer` (TS 5.6 narrowed `Uint8Array.buffer` type, broke `deriveBits` call)
+- `idb.ts` — `stores` typed as `StoreName[]` literal union so `db.transaction()` type-checks
 
 ## v1.0.2.0
 
 ### Added
 
-- Design system primitives in `src/ui/`:
-  - `Button` (variants: primary/secondary/ghost/danger; sizes sm/md/lg; loading state)
-  - `Card` (title/subtitle/header-action/padded/interactive)
-  - `GlassPanel` (glass/strong variants, forwardRef)
-  - `Skeleton` + `SkeletonText`
-  - `Input` (label/hint/error/leftIcon/rightSlot)
-  - `Select` (options/placeholder, chevron)
-  - `Switch` (accessible toggle)
-  - `Tabs` (a11y roles)
-  - `Tooltip` (4 sides, delayed show)
-  - `Dialog` (portal, ESC close, scroll-lock, 3 sizes)
-  - `Notice` (info/success/warning/error)
-  - `Toast` + `ToastProvider` + `useToast`
-  - `ProgressBar` (tones + percent label)
-  - `EmptyState`
-  - `ErrorState`
-  - `Icon` (Lucide wrapper, gold/dim/white tones)
+- Design system primitives in `src/ui/`: Button, Card, GlassPanel, Skeleton + SkeletonText, Input, Select, Switch, Tabs, Tooltip, Dialog, Notice, Toast + ToastProvider + useToast, ProgressBar, EmptyState, ErrorState, Icon
 - Barrel export at `src/ui/index.ts`
 - `.vscode/settings.json` to silence Tailwind CSS lint
 - `@types/node` dev dependency
