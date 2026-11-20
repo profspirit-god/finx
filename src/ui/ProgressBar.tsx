@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 type Props = {
   value: number;
   max?: number;
@@ -5,6 +7,7 @@ type Props = {
   showPercent?: boolean;
   tone?: 'gold' | 'green' | 'orange' | 'red';
   className?: string;
+  animateOnMount?: boolean;
 };
 
 const tones: Record<NonNullable<Props['tone']>, string> = {
@@ -21,14 +24,28 @@ export function ProgressBar({
   showPercent = false,
   tone = 'gold',
   className = '',
+  animateOnMount = true,
 }: Props) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100));
+  const [displayPct, setDisplayPct] = useState(animateOnMount ? 0 : pct);
+
+  useEffect(() => {
+    if (!animateOnMount) {
+      setDisplayPct(pct);
+      return;
+    }
+    const t = requestAnimationFrame(() => setDisplayPct(pct));
+    return () => cancelAnimationFrame(t);
+  }, [pct, animateOnMount]);
+
   return (
     <div className={className}>
       {(label || showPercent) && (
         <div className="flex items-center justify-between text-xs mb-1.5">
           {label && <span className="text-dim">{label}</span>}
-          {showPercent && <span className="text-gold-400 font-medium">{Math.round(pct)}%</span>}
+          {showPercent && (
+            <span className="text-gold-400 font-medium">{Math.round(displayPct)}%</span>
+          )}
         </div>
       )}
       <div
@@ -39,8 +56,11 @@ export function ProgressBar({
         className="h-2 rounded-full bg-white/10 overflow-hidden"
       >
         <div
-          className={['h-full rounded-full transition-[width] duration-500 ease-out', tones[tone]].join(' ')}
-          style={{ width: `${pct}%` }}
+          className={[
+            'h-full rounded-full transition-[width] duration-700 ease-out',
+            tones[tone],
+          ].join(' ')}
+          style={{ width: `${displayPct}%` }}
         />
       </div>
     </div>
