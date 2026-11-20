@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import DevUI from '@/app/dev/DevUIPage';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -19,5 +18,4 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/ai',         element: <Placeholder label="AI Assistant" /> },
   { path: '/settings',   element: <Placeholder label="Settings" /> },
   { path: '/help',       element: <Placeholder label="Help" /> },
-  { path: '/dev/ui',     element: <DevUI /> },
 ];
