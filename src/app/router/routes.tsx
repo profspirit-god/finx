@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { LockScreen } from '@/features/lock';
 import { OnboardingWizard } from '@/features/onboarding';
+import { WalletList, WalletDetail, WizardShell } from '@/features/wallets';
 import { useAuthStore } from '@/features/auth';
 import { Button } from '@/ui';
 
@@ -38,14 +39,16 @@ function HelpPage() {
 }
 
 export const routes: { path: string; element: ReactElement }[] = [
-  { path: '/',           element: <Placeholder label="Dashboard" /> },
-  { path: '/dashboard',  element: <Placeholder label="Dashboard" /> },
-  { path: '/wallets',    element: <Placeholder label="Wallets" /> },
-  { path: '/records',    element: <Placeholder label="Records" /> },
-  { path: '/data-tools', element: <Placeholder label="Data Tools" /> },
-  { path: '/ai',         element: <Placeholder label="AI Assistant" /> },
-  { path: '/settings',   element: <Placeholder label="Settings" /> },
-  { path: '/help',       element: <HelpPage /> },
-  { path: '/lock',       element: <LockScreen /> },
-  { path: '/onboarding', element: <OnboardingWizard /> },
+  { path: '/',             element: <Placeholder label="Dashboard" /> },
+  { path: '/dashboard',    element: <Placeholder label="Dashboard" /> },
+  { path: '/wallets',      element: <WalletList /> },
+  { path: '/wallets/new',  element: <WizardShell /> },
+  { path: '/wallets/:id',  element: <WalletDetail /> },
+  { path: '/records',      element: <Placeholder label="Records" /> },
+  { path: '/data-tools',   element: <Placeholder label="Data Tools" /> },
+  { path: '/ai',           element: <Placeholder label="AI Assistant" /> },
+  { path: '/settings',     element: <Placeholder label="Settings" /> },
+  { path: '/help',         element: <HelpPage /> },
+  { path: '/lock',         element: <LockScreen /> },
+  { path: '/onboarding',   element: <OnboardingWizard /> },
 ];
