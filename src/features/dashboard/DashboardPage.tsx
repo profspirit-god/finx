@@ -8,6 +8,9 @@ import SummaryCards from './components/SummaryCards';
 import RateCards from './components/RateCards';
 import TimeRangeSelector from './components/TimeRangeSelector';
 import type { TimeRange } from './lib/stats';
+import NetWorthChart from './components/NetWorthChart';
+import CashflowChart from './components/CashflowChart';
+import InvestmentDonut from './components/InvestmentDonut';
 
 type RateMode = 'month' | 'day' | 'year';
 
@@ -86,14 +89,13 @@ export default function DashboardPage() {
             mode={rateMode}
             onModeChange={setRateMode}
           />
-          <div className="glass p-4 text-sm text-dim flex items-center justify-between">
-            <span>Charts and recent activity coming in the next phase.</span>
-            <Link to="/records/new">
-              <Button size="sm" variant="secondary" leftIcon={<Receipt size={14} strokeWidth={2} />}>
-                New record
-              </Button>
-            </Link>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <NetWorthChart data={stats.netWorth} currency={currency} />
+            <CashflowChart data={stats.cashflow} currency={currency} />
           </div>
+
+          <InvestmentDonut wallets={wallets} currency={currency} />
         </>
       )}
     </div>
