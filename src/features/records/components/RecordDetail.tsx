@@ -6,11 +6,11 @@ import {
 import { Button, Dialog, Input, Notice, Select, Skeleton, useToast } from '@/ui';
 import { ErrorPage } from '@/features/errors';
 import { useRecordsStore } from '../state/records.store';
-import { useWalletsStore } from '@/features/wallets/state/wallets.store';
 import { RECORD_CLASS_LABELS, type Record, type CashflowClass } from '@/types/record';
 import { formatMinor, parseToMinor } from '@/lib/format/currency';
 import { formatDateTime } from '@/lib/format/date';
 import ReceiptViewer from './ReceiptViewer';
+import { useWallets } from '@/features/wallets/hooks/useWallets';
 
 const ICONS = {
   income: ArrowDownLeft,
@@ -40,7 +40,7 @@ export default function RecordDetail() {
   const getOne = useRecordsStore((s) => s.getOne);
   const update = useRecordsStore((s) => s.update);
   const remove = useRecordsStore((s) => s.remove);
-  const wallets = useWalletsStore((s) => s.wallets);
+  const { wallets } = useWallets();
 
   const [record, setRecord] = useState<Record | null>(
     records.find((r) => r.id === id) ?? null,

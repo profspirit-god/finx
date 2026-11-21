@@ -22,6 +22,28 @@ Root cause
 
 ## Entries
 
+### BUG-20261121-08 — `walletId` TDZ in RecordForm after circular fix
+
+- Status: fixed
+- Version found: 1.5.1.0 (fix branch)
+- Version fixed: 1.5.0.1
+- Files touched: `src/features/records/components/RecordForm.tsx`
+- Symptoms: `Cannot access 'walletId' before initialization` on `/records/new`
+- Root cause: `selectedWallet` and `currency` consts declared above the `walletId` useState — TDZ
+- Fix: moved the two derived values below all state declarations
+- Regression test: yes — full first-record creation flow after DB wipe
+
+### BUG-20261121-07 — Circular store import broke first-record creation
+
+- Status: fixed
+- Version found: 1.5.0.0
+- Version fixed: 1.5.0.1
+- Files touched: `src/features/records/state/records.store.ts`, `src/features/auth/state/auth.store.ts`
+- Symptoms: `Cannot access 'h' before initialization` after saving first record on fresh DB
+- Root cause: `records.store` statically imported `wallets.store`, and `auth.store` statically imported `useCurrency`; combined with v1.5.0.0 module additions, produced a circular import that surfaced as a TDZ at refresh time
+- Fix: `records.store.refreshWallets()` and `auth.store.completePersonalization()` now use `await import()` inside actions — no static cross-store imports
+- Regression test: yes — cleared DB, onboarding, wallet + record creation
+
 ### BUG-20261121-06 — `useCurrency()` called at module scope
 
 - Status: fixed

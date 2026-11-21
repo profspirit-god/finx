@@ -9,7 +9,6 @@ import {
   listRecordsByWallet,
   updateRecord,
 } from '../api/records.repo';
-import { useWalletsStore } from '@/features/wallets/state/wallets.store';
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -26,6 +25,11 @@ type RecordsStore = {
   update: (id: string, patch: Partial<Omit<RecordInput, 'walletId'>>) => Promise<Record | null>;
   remove: (id: string) => Promise<void>;
 };
+
+async function refreshWallets() {
+  const { useWalletsStore } = await import('@/features/wallets/state/wallets.store');
+  await useWalletsStore.getState().refresh();
+}
 
 export const useRecordsStore = create<RecordsStore>((set) => ({
   records: [],
@@ -52,14 +56,14 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
   create: async (input) => {
     const record = await createRecord(input);
     set((s) => ({ records: [record, ...s.records] }));
-    void useWalletsStore.getState().refresh();
+    void refreshWallets();
     return record;
   },
 
   createTransfer: async (input) => {
     const pair = await createTransfer(input);
     set((s) => ({ records: [pair.out, pair.in, ...s.records] }));
-    void useWalletsStore.getState().refresh();
+    void refreshWallets();
     return pair;
   },
 
@@ -67,7 +71,7 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
     const updated = await updateRecord(id, patch);
     if (updated) {
       set((s) => ({ records: s.records.map((r) => (r.id === id ? updated : r)) }));
-      void useWalletsStore.getState().refresh();
+      void refreshWallets();
     }
     return updated;
   },
@@ -75,6 +79,6 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
   remove: async (id) => {
     await deleteRecord(id);
     set((s) => ({ records: s.records.filter((r) => r.id !== id) }));
-    void useWalletsStore.getState().refresh();
+    void refreshWallets();
   },
 }));
