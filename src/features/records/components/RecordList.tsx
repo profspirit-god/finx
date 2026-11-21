@@ -6,12 +6,13 @@ import { useRecords } from '../hooks/useRecords';
 import { useWalletsStore } from '@/features/wallets/state/wallets.store';
 import RecordRow from './RecordRow';
 import RecordFilters, { type FilterState } from './RecordFilters';
+import { useWallets } from '@/features/wallets/hooks/useWallets';
 
 const INITIAL: FilterState = { class: 'all', walletId: 'all', from: '', to: '', search: '' };
 
 export default function RecordList() {
   const { records, loadState, error, refresh } = useRecords();
-  const wallets = useWalletsStore((s) => s.wallets);
+  const { wallets } = useWallets();
   const [filters, setFilters] = useState<FilterState>(INITIAL);
 
   const filtered = useMemo(() => {

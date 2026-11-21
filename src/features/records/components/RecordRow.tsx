@@ -3,7 +3,7 @@ import { ArrowDownLeft, ArrowUpRight, ArrowRightLeft, SlidersHorizontal, Receipt
 import { RECORD_CLASS_LABELS, RECORD_CLASS_TONES, type Record, type CashflowClass } from '@/types/record';
 import { formatMinor } from '@/lib/format/currency';
 import { formatDate } from '@/lib/format/date';
-import { useWalletsStore } from '@/features/wallets/state/wallets.store';
+import { useWallets } from '@/features/wallets/hooks/useWallets';
 
 const ICONS = {
   income: ArrowDownLeft,
@@ -20,7 +20,7 @@ const TONE_CLASSES: { [K in CashflowClass]: string } = {
 };
 
 export default function RecordRow({ record }: { record: Record }) {
-  const wallets = useWalletsStore((s) => s.wallets);
+  const { wallets } = useWallets();
   const wallet = wallets.find((w) => w.id === record.walletId);
   const Icon = ICONS[record.class];
   const sign =

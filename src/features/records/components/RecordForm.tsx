@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowDownLeft, ArrowUpRight, ArrowRightLeft, SlidersHorizontal } from 'lucide-react';
-import { Button, Input, Select, useToast } from '@/ui';
+import { Button, Input, Select, Skeleton, useToast } from '@/ui';
 import { useRecordsStore } from '../state/records.store';
 import { useWalletsStore } from '@/features/wallets/state/wallets.store';
 import type { CashflowClass } from '@/types/record';
@@ -9,6 +9,7 @@ import { RECORD_CLASS_LABELS } from '@/types/record';
 import { formatMinor, parseToMinor } from '@/lib/format/currency';
 import { saveReceipt } from '../api/receipts.repo';
 import ReceiptUploader from './ReceiptUploader';
+import { useWallets } from '@/features/wallets/hooks/useWallets';
 
 type Mode = 'standard' | 'transfer';
 
@@ -25,7 +26,7 @@ export default function RecordForm() {
   const toast = useToast();
   const create = useRecordsStore((s) => s.create);
   const createTransfer = useRecordsStore((s) => s.createTransfer);
-  const wallets = useWalletsStore((s) => s.wallets);
+  const { wallets, loadState: walletsLoadState } = useWallets();
 
   const activeWallets = useMemo(() => wallets.filter((w) => !w.archived), [wallets]);
 
@@ -164,6 +165,22 @@ export default function RecordForm() {
       });
     }
   };
+
+    if (walletsLoadState === 'idle' || walletsLoadState === 'loading') {
+    return (
+      <div className="space-y-4 max-w-xl">
+        <Link to="/records">
+          <Button variant="ghost" leftIcon={<ArrowLeft size={16} strokeWidth={2} />}>Back to records</Button>
+        </Link>
+        <div className="space-y-3">
+          <Skeleton width="40%" height={20} />
+          <Skeleton width="100%" height={40} />
+          <Skeleton width="100%" height={40} />
+          <Skeleton width="100%" height={40} />
+        </div>
+      </div>
+    );
+  }
 
   if (activeWallets.length === 0) {
     return (
