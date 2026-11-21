@@ -6,6 +6,7 @@ import { RecordList, RecordForm, RecordDetail } from '@/features/records';
 import { useAuthStore } from '@/features/auth';
 import { Button } from '@/ui';
 import { DashboardPage } from '@/features/dashboard';
+import { DataToolsPage } from '@/features/data-tools';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -113,7 +114,7 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/records',      element: <RecordList /> },
   { path: '/records/new',  element: <RecordForm /> },
   { path: '/records/:id',  element: <RecordDetail /> },
-  { path: '/data-tools',   element: <Placeholder label="Data Tools" /> },
+  { path: '/data-tools',   element: <DataToolsPage /> },
   { path: '/ai',           element: <Placeholder label="AI Assistant" /> },
   { path: '/settings',     element: <Placeholder label="Settings" /> },
   { path: '/help',         element: <HelpPage /> },

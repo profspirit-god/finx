@@ -1,3 +1,7 @@
+export { default as DataToolsPage } from './DataToolsPage';
+export { default as ExportPanel } from './components/ExportPanel';
+export { default as FormatPicker } from './components/FormatPicker';
+export { default as FieldPicker } from './components/FieldPicker';
 export {
   RECORD_FIELDS,
   BACKUP_VERSION,
