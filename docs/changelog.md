@@ -2,6 +2,7 @@
 
 ## Index
 
+- [v1.4.0.0](#v1400)
 - [v1.3.0.0](#v1300)
 - [v1.2.0.0](#v1200)
 - [v1.1.0.0](#v1100)
@@ -10,58 +11,63 @@
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
 
+## v1.4.0.0
+
+### Added
+
+- Dashboard feature (`src/features/dashboard/`):
+  - `lib/stats.ts` — `computeDashboard`, `totalsInRange`, `computeRates`, `bucketCashflow`, `computeNetWorthTrend`, `rangeMs`, `sumWalletBalances`, `sumInvestments`. Time ranges: this month / last 3 / last 6 / this year.
+  - `hooks/useDashboardStats.ts` — memoized hook over wallets + records with loading/error states.
+  - `SummaryCards` — Total Money, Income, Expenses, Investments (color-coded icons).
+  - `RateCards` — Income + Expense rates with Monthly / Daily / Yearly toggle + net line.
+  - `TimeRangeSelector` — Tabs control that drives all dashboard data.
+  - `NetWorthChart` — Recharts area chart with gold gradient.
+  - `CashflowChart` — Recharts bar chart, income (green) vs expense (red).
+  - `InvestmentDonut` — Pie chart of investment-type wallet balances; hidden if none.
+  - `RecentActivity` — 5 most recent records with icon, relative time, wallet, signed amount, "View all" link.
+  - `DashboardPage` — orchestrates all sections; skeleton loading; "No wallets yet" empty state.
+
+### Changed
+
+- `/` and `/dashboard` now render `DashboardPage` (was placeholder).
+
+### Known gaps
+
+- No live cross-tab sync (records / wallets refresh on next page mount).
+- Investment donut hidden when empty leaves a gap in the bottom grid on desktop — polish target for v2.0.0.0.
+
 ## v1.3.0.0
 
 ### Added
 
-- Records feature (`src/features/records/`):
-  - `records.repo.ts` — CRUD, soft delete, transfer pairs (atomic), wallet balance sync via `adjustBalance`
-  - `receipts.repo.ts` — Blob storage for receipt attachments
-  - `records.store.ts` — Zustand, auto-refreshes wallets store after mutations
-  - `useRecords` hook
-  - `RecordRow` — class icon, signed amount, wallet + counterparty + date + note, receipt indicator
-  - `RecordList` — filters (class / wallet / date range / search), loading skeleton, empty, filtered-empty, error states
-  - `RecordForm` — mode toggle (standard / transfer), per-field inline errors, auto-scroll to first error with pulse animation, sticky action bar, toast feedback (success + error), receipt upload
-  - `RecordDetail` — full view, inline edit mode, delete (pair-aware with dialog), receipt viewer (image / PDF) with download
-  - `ReceiptUploader`, `ReceiptViewer`
-- Wallet audit log wired to live records (`WalletAuditLog` now reads `listRecordsByWallet`)
-- Toast feedback on record save, edit, and delete
-
-### Changed
-
-- `RecordForm` accepts save feedback via toasts; per-field errors replace the single form-level notice
-- Wallet detail, record list, record form, record row all use `useWallets()` hook (triggers store hydration on mount) instead of reading `useWalletsStore` directly
-- WalletDetail shows skeleton during wallet store load instead of flashing "wallet not found"
+- Records repo (CRUD + transfers + receipts), Zustand store, list with filters, create form (inline per-field errors, sticky action bar, toast, receipt upload), detail with inline edit + pair-aware delete + receipt viewer
+- Wallet audit log wired to live records
 
 ### Fixed
 
-- `records.repo.createTransfer` — paired records written atomically in a single transaction; both wallets updated in the same transaction
-- `Record` type collided with TS's built-in `Record<K,V>` — label/tone maps now use inline literal types
-- Two-tab reload race: after `Ctrl+R`, opening `/records/new` showed "no wallets" even when wallets existed, until another page hydrated the store. Fixed by hook-level hydration + loading skeleton guard.
-
-### Known gaps
-
-- Transfers are delete + recreate to edit (editing disabled for transfer records)
-- No live cross-tab sync yet (records auto-refresh only via the store's mutation methods; external tab changes need F5)
+- Wallets store hydration race on record pages after reload (hook-level load)
+- `Record` type collision with TS built-in `Record<K,V>`
+- Wizard Back preserved field edits (lifted state)
 
 ## v1.2.0.0
 
 ### Added
 
-- Wallet repo + store + hooks, 5-step progressive create wizard (back preserves edits via lifted state), list with empty/error/skeleton states, detail with meta grid + goal bar + archive/delete
-- Error code system: 11 codes across URL / Data / Auth / System buckets; `ErrorPage`; Help reference tables
+- Wallet repo + store + hooks, 5-step progressive wizard, list with empty/error/skeleton states, detail with goal bar, archive/delete
+- Error code registry (11 codes: URL1–URL3, DATA1–DATA3, AUTH1–AUTH2, SYS1–SYS3), `ErrorPage`, Help reference tables
 
 ### Fixed
 
-- Wizard Back discarded field edits (state now lifted to `WizardShell.draft`)
+- Wizard Back discarded field edits
 
 ## v1.1.0.0
 
 ### Added
 
-- Auth types, user repo (PBKDF2), Zustand auth store, AuthProvider
+- Auth types, PBKDF2 user repo, Zustand auth store, AuthProvider
 - AuthGuard (onboarding → lock → unlocked)
 - 5-step onboarding wizard, LockScreen + PinPad, Sidebar "Lock now"
+- Forced lock after onboarding
 
 ## v1.0.3.0
 
@@ -78,17 +84,17 @@
 
 ### Added
 
-- 15 design system primitives, barrel export, `.vscode/settings.json`
+- 15 design system primitives in `src/ui/`, barrel export, `.vscode/settings.json`
 
 ### Changed
 
-- `tsconfig.json` — removed `baseUrl`, added `node` types
+- `tsconfig.json` — removed `baseUrl`, added `node` types, included `vite.config.ts`
 
 ## v1.0.0.1
 
 ### Fixed
 
-- Restored `package.json` (empty in v1.0.0.0), rewrote 26 truncated files, completed `.gitignore`, created missing files
+- Restored `package.json`, rewrote 26 truncated files, completed `.gitignore`, created missing files
 
 ## v1.0.0.0
 

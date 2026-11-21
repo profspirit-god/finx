@@ -5,6 +5,7 @@ import { WalletList, WalletDetail, WizardShell } from '@/features/wallets';
 import { RecordList, RecordForm, RecordDetail } from '@/features/records';
 import { useAuthStore } from '@/features/auth';
 import { Button } from '@/ui';
+import { DashboardPage } from '@/features/dashboard';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -104,8 +105,8 @@ function ErrorTable({ rows }: { rows: [string, string, string][] }) {
 }
 
 export const routes: { path: string; element: ReactElement }[] = [
-  { path: '/',             element: <Placeholder label="Dashboard" /> },
-  { path: '/dashboard',    element: <Placeholder label="Dashboard" /> },
+  { path: '/',             element: <DashboardPage /> },
+  { path: '/dashboard',    element: <DashboardPage /> },
   { path: '/wallets',      element: <WalletList /> },
   { path: '/wallets/new',  element: <WizardShell /> },
   { path: '/wallets/:id',  element: <WalletDetail /> },

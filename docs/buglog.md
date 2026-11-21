@@ -22,6 +22,18 @@ Root cause
 
 ## Entries
 
+### BUG-20261121-04 — Investment donut empty leaves grid gap
+
+- Status: open (deferred)
+- Version found: 1.4.0.0 (Phase D)
+- Version fixed: planned v2.0.0.0
+- Files touched: `src/features/dashboard/DashboardPage.tsx`
+- Symptoms: when no investment wallets exist, the bottom two-column grid has an empty right cell
+- Root cause: `InvestmentDonut` returns `null` when empty; grid still allocates its column
+- Workaround: none — purely cosmetic; noted for v2.0.0.0 polish
+- Fix plan: conditional grid class (`lg:grid-cols-1` when donut hidden) or move donut into recent-activity column
+- Regression test: no
+
 ### BUG-20261121-03 — Wallets store not hydrated on record pages after reload
 
 - Status: fixed
