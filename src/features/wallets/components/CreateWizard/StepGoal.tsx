@@ -3,6 +3,7 @@ import { Button, Input, Switch } from '@/ui';
 import { formatDate } from '@/lib/format/date';
 import { formatMinor, parseToMinor } from '@/lib/format/currency';
 import type { WizardDraft } from './WizardShell';
+import { useCurrency } from '@/lib/hooks/useCurrency';
 
 type Props = {
   draft: WizardDraft;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export default function StepGoal({ draft, onChange, onNext }: Props) {
+  const currency = useCurrency();
   const [error, setError] = useState<string | null>(null);
   const enabled = draft.targetAmountMinor !== null;
   const amountRaw = draft.targetAmountMinor ? (draft.targetAmountMinor / 100).toString() : '';
@@ -59,7 +61,7 @@ export default function StepGoal({ draft, onChange, onNext }: Props) {
             inputMode="decimal"
             hint={
               draft.targetAmountMinor !== null && draft.targetAmountMinor > 0
-                ? `Goal: ${formatMinor(draft.targetAmountMinor, 'USD')}`
+                ? `Goal: ${formatMinor(draft.targetAmountMinor, currency)}`
                 : undefined
             }
             error={error ?? undefined}

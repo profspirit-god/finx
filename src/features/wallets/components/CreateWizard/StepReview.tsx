@@ -3,6 +3,7 @@ import { formatMinor } from '@/lib/format/currency';
 import { formatDate } from '@/lib/format/date';
 import { WALLET_TYPE_LABELS } from '@/types/wallet';
 import type { WalletInput } from '@/types/wallet';
+import { useCurrency } from '@/lib/hooks/useCurrency';
 
 type Props = {
   draft: {
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export default function StepReview({ draft, saving, onBack, onCreate }: Props) {
+  const currency = useCurrency();
   return (
     <div className="space-y-5">
       <div>
@@ -31,10 +33,10 @@ export default function StepReview({ draft, saving, onBack, onCreate }: Props) {
         <Row label="Name" value={draft.name} />
         <Row label="Type" value={WALLET_TYPE_LABELS[draft.type]} />
         <Row label="Description" value={draft.description || '—'} />
-        <Row label="Starting balance" value={formatMinor(draft.startingBalanceMinor, 'USD')} />
+        <Row label="Starting balance" value={formatMinor(draft.startingBalanceMinor, currency)} />
         {draft.targetAmountMinor !== null && (
           <>
-            <Row label="Goal amount" value={formatMinor(draft.targetAmountMinor, 'USD')} />
+            <Row label="Goal amount" value={formatMinor(draft.targetAmountMinor, currency)} />
             {draft.targetDate !== null && (
               <Row label="Goal date" value={formatDate(draft.targetDate)} />
             )}
