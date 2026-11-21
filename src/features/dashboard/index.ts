@@ -6,4 +6,5 @@ export { default as TimeRangeSelector } from './components/TimeRangeSelector';
 export { default as NetWorthChart } from './components/NetWorthChart';
 export { default as CashflowChart } from './components/CashflowChart';
 export { default as InvestmentDonut } from './components/InvestmentDonut';
+export { default as RecentActivity } from './components/RecentActivity';
 export type { DashboardStats, TimeRange, PeriodTotals, RateStats, CashflowBucket, NetWorthPoint } from './lib/stats';

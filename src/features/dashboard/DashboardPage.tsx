@@ -1,16 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Receipt, Wallet } from 'lucide-react';
+import { Plus, Wallet } from 'lucide-react';
 import { Button, EmptyState, ErrorState, Skeleton } from '@/ui';
 import { useDashboardStats } from './hooks/useDashboardStats';
 import { useWallets } from '@/features/wallets/hooks/useWallets';
 import SummaryCards from './components/SummaryCards';
 import RateCards from './components/RateCards';
 import TimeRangeSelector from './components/TimeRangeSelector';
-import type { TimeRange } from './lib/stats';
 import NetWorthChart from './components/NetWorthChart';
 import CashflowChart from './components/CashflowChart';
 import InvestmentDonut from './components/InvestmentDonut';
+import RecentActivity from './components/RecentActivity';
+import type { TimeRange } from './lib/stats';
 
 type RateMode = 'month' | 'day' | 'year';
 
@@ -59,10 +60,9 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <Skeleton key={i} width="100%" height={80} rounded="lg" />
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Skeleton width="100%" height={240} rounded="lg" />
+            <Skeleton width="100%" height={240} rounded="lg" />
           </div>
         </>
       )}
@@ -95,7 +95,10 @@ export default function DashboardPage() {
             <CashflowChart data={stats.cashflow} currency={currency} />
           </div>
 
-          <InvestmentDonut wallets={wallets} currency={currency} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <RecentActivity />
+            <InvestmentDonut wallets={wallets} currency={currency} />
+          </div>
         </>
       )}
     </div>
