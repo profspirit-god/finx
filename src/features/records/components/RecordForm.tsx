@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowDownLeft, ArrowUpRight, ArrowRightLeft, SlidersHorizontal } from 'lucide-react';
 import { Button, Input, Select, Skeleton, useToast } from '@/ui';
 import { useRecordsStore } from '../state/records.store';
-import { useWalletsStore } from '@/features/wallets/state/wallets.store';
 import type { CashflowClass } from '@/types/record';
 import { RECORD_CLASS_LABELS } from '@/types/record';
 import { formatMinor, parseToMinor } from '@/lib/format/currency';
@@ -27,11 +26,7 @@ export default function RecordForm() {
   const create = useRecordsStore((s) => s.create);
   const createTransfer = useRecordsStore((s) => s.createTransfer);
   const { wallets, loadState: walletsLoadState } = useWallets();
-
   const activeWallets = useMemo(() => wallets.filter((w) => !w.archived), [wallets]);
-  const selectedWallet = activeWallets.find((w) => w.id === walletId);
-  const currency = selectedWallet?.currency ?? 'USD';
-
   const [mode, setMode] = useState<Mode>('standard');
   const [cls, setCls] = useState<CashflowClass>('expense');
   const [walletId, setWalletId] = useState('');
@@ -45,6 +40,9 @@ export default function RecordForm() {
   const [receipt, setReceipt] = useState<File | null>(null);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [saving, setSaving] = useState(false);
+
+  const selectedWallet = activeWallets.find((w) => w.id === walletId);
+  const currency = selectedWallet?.currency ?? 'USD';
 
   // refs for scroll targets
   const walletRef = useRef<HTMLDivElement>(null);
