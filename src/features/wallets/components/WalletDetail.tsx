@@ -10,6 +10,7 @@ import { formatMinor } from '@/lib/format/currency';
 import { formatDate } from '@/lib/format/date';
 import WalletGoalBar from './WalletGoalBar';
 import WalletAuditLog from './WalletAuditLog';
+import { ErrorPage } from '@/features/errors';
 
 const ICONS: Record<WalletType, typeof WalletIcon> = {
   cash: Banknote,
@@ -38,13 +39,7 @@ export default function WalletDetail() {
   if (!id) return <ErrorState title="Missing wallet id" />;
 
   if (!wallet) {
-    return (
-      <div className="space-y-3">
-        <Skeleton width={120} height={32} />
-        <Skeleton width="60%" height={24} />
-        <Skeleton width="40%" height={48} />
-      </div>
-    );
+    return <WalletLoadingOrNotFound id={id} />;
   }
 
   if (wallet.archived) {
@@ -176,4 +171,24 @@ function Meta({ label, value }: { label: string; value: string }) {
       <p className="text-sm font-medium text-white truncate mt-0.5">{value}</p>
     </div>
   );
+}
+
+function WalletLoadingOrNotFound({ id }: { id: string }) {
+  const [elapsed, setElapsed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setElapsed(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!elapsed) {
+    return (
+      <div className="space-y-3">
+        <Skeleton width={120} height={32} />
+        <Skeleton width="60%" height={24} />
+        <Skeleton width="40%" height={48} />
+      </div>
+    );
+  }
+
+  return <ErrorPage code="URL1" detail={`Wallet id: ${id}`} />;
 }
