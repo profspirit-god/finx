@@ -4,8 +4,10 @@ import { OnboardingWizard } from '@/features/onboarding';
 import { WalletList, WalletDetail, WizardShell } from '@/features/wallets';
 import { RecordList, RecordForm, RecordDetail } from '@/features/records';
 import { useAuthStore } from '@/features/auth';
-import { Button } from '@/ui';
+import { Button, Dialog } from '@/ui';
 import { DashboardPage } from '@/features/dashboard';
+import { DataToolsPage } from '@/features/data-tools';
+import { useState } from 'react';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -19,6 +21,9 @@ function Placeholder({ label }: { label: string }) {
 function HelpPage() {
   const reset = useAuthStore((s) => s.reset);
   const lock = useAuthStore((s) => s.lock);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmWipe, setConfirmWipe] = useState(false);
+
   return (
     <div className="p-8 space-y-6 max-w-2xl">
       <h1 className="text-2xl font-semibold">Help</h1>
@@ -28,15 +33,11 @@ function HelpPage() {
         <h2 className="text-sm font-semibold text-white">Test actions</h2>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" onClick={lock}>Lock now</Button>
-          <Button
-            variant="danger"
-            onClick={async () => {
-              if (!confirm('Wipe the local user and restart onboarding?')) return;
-              await reset();
-              window.location.href = '/onboarding';
-            }}
-          >
-            Reset onboarding
+          <Button variant="secondary" onClick={() => setConfirmReset(true)}>
+            Reset onboarding (keep data)
+          </Button>
+          <Button variant="danger" onClick={() => setConfirmWipe(true)}>
+            Wipe all data
           </Button>
         </div>
       </section>
@@ -75,6 +76,56 @@ function HelpPage() {
           ['SYS3', 'Storage full', 'Local storage quota exceeded.'],
         ]} />
       </section>
+
+      <Dialog
+        open={confirmReset}
+        onClose={() => setConfirmReset(false)}
+        title="Reset onboarding?"
+        description="Your user profile (name, password, PIN) will be removed and you'll redo the wizard. All wallets, records, and receipts are kept."
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setConfirmReset(false)}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                setConfirmReset(false);
+                await reset();
+                window.location.href = '/onboarding';
+              }}
+            >
+              Reset onboarding
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-dim">You will need to enter a new name, password, and PIN.</p>
+      </Dialog>
+
+      <Dialog
+        open={confirmWipe}
+        onClose={() => setConfirmWipe(false)}
+        title="Wipe all data?"
+        description="Every wallet, record, receipt, and the current user will be permanently deleted from this device."
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setConfirmWipe(false)}>Cancel</Button>
+            <Button
+              variant="danger"
+              onClick={async () => {
+                setConfirmWipe(false);
+                const { dbClearAll } = await import('@/lib/db/idb');
+                await dbClearAll();
+                window.location.href = '/';
+              }}
+            >
+              Yes, wipe everything
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-[var(--sys-red)]">
+          This cannot be undone. Export a full backup first if you want to keep your data.
+        </p>
+      </Dialog>
     </div>
   );
 }
@@ -113,7 +164,7 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/records',      element: <RecordList /> },
   { path: '/records/new',  element: <RecordForm /> },
   { path: '/records/:id',  element: <RecordDetail /> },
-  { path: '/data-tools',   element: <Placeholder label="Data Tools" /> },
+  { path: '/data-tools',   element: <DataToolsPage /> },
   { path: '/ai',           element: <Placeholder label="AI Assistant" /> },
   { path: '/settings',     element: <Placeholder label="Settings" /> },
   { path: '/help',         element: <HelpPage /> },

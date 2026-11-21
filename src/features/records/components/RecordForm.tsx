@@ -29,6 +29,8 @@ export default function RecordForm() {
   const { wallets, loadState: walletsLoadState } = useWallets();
 
   const activeWallets = useMemo(() => wallets.filter((w) => !w.archived), [wallets]);
+  const selectedWallet = activeWallets.find((w) => w.id === walletId);
+  const currency = selectedWallet?.currency ?? 'USD';
 
   const [mode, setMode] = useState<Mode>('standard');
   const [cls, setCls] = useState<CashflowClass>('expense');
@@ -301,7 +303,7 @@ export default function RecordForm() {
               inputMode="decimal"
               value={amountRaw}
               onChange={(e) => { setAmountRaw(e.target.value); setErrors((p) => ({ ...p, amount: undefined })); }}
-              hint={!errors.amount && parsedAmount ? formatMinor(parsedAmount, 'USD') : undefined}
+              hint={!errors.amount && parsedAmount ? formatMinor(parsedAmount, currency) : undefined}
               error={errors.amount}
             />
           </div>

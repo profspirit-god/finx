@@ -11,6 +11,7 @@ import {
 } from '../api/user.repo';
 import type { PersonalizeInput } from '../types';
 import { getDB } from '@/lib/db/idb';
+import { invalidateCurrencyCache } from '@/lib/hooks/useCurrency';
 
 const SESSION_KEY = 'finx_unlocked';
 
@@ -113,6 +114,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         currency: input.primaryCurrency,
         updatedAt: Date.now(),
       });
+      invalidateCurrencyCache();
     }
   },
 

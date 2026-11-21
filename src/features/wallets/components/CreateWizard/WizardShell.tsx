@@ -9,6 +9,7 @@ import StepGoal from './StepGoal';
 import StepReview from './StepReview';
 import type { WalletInput } from '@/types/wallet';
 import { useWallets } from '@/features/wallets/hooks/useWallets';
+import { useCurrency } from '@/lib/hooks/useCurrency';
 
 export type WizardDraft = {
   name: string;
@@ -36,6 +37,7 @@ export default function WizardShell() {
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState<WizardDraft>(INITIAL);
   const [saving, setSaving] = useState(false);
+  const currency = useCurrency();
 
   const totalSteps = 5;
   const pct = Math.round((step / totalSteps) * 100);
@@ -52,7 +54,7 @@ export default function WizardShell() {
         name: draft.name,
         description: draft.description,
         type: draft.type,
-        currency: 'USD',
+        currency: currency,
         startingBalanceMinor: draft.startingBalanceMinor,
         color: draft.color,
         iconKey: null,
