@@ -28,32 +28,32 @@ Types, IndexedDB, PBKDF2 crypto, format, hooks, provider stack, bootstrap.
 
 ## v1.1.0.0 — Onboarding & Lock
 
-First-run wizard (signup → terms → PIN → personalize → finish). 4-digit PIN gate on every launch. Forced lock after onboarding. `AuthProvider` + `AuthGuard`. Sidebar "Lock now". Temporary `/help` reset for testing.
+First-run wizard (signup → terms → PIN → personalize → finish). 4-digit PIN gate. Forced lock after onboarding. AuthProvider + AuthGuard. Sidebar "Lock now".
 
 ## v1.2.0.0 — Wallets
 
-List, progressive create wizard, detail, audit log, goal progress.
+Wallets repo + store. List with loading/empty/error states. Card with icon + balance + goal bar. Progressive 5-step create wizard (back preserves edits). Detail view with meta grid, goal bar, archive/delete. Error code system: 11 codes across URL/Data/Auth/System buckets; ErrorPage component; Help shows the code tables.
 
 ## v1.3.0.0 — Records
 
-List, filters, form, receipts, transfer pair.
+Record repo + store. List with filters (class, wallet, date range). Form (date, amount, class, wallet, counterparty, note, tags, receipt upload). Transfer pairs. Audit log in WalletDetail becomes live. Wallet balance auto-updates via `adjustBalance`.
 
 ## v1.4.0.0 — Dashboard
 
-Summary cards, rates, net-worth & cashflow charts, empty state.
+Summary cards (total money, income, expenses, investments). Rate cards (monthly/daily/yearly income & expense rate). Net-worth and cashflow charts (Recharts). Empty dashboard state.
 
 ## v1.5.0.0 — Data Tools
 
-Export (CSV/JSON/XLSX/PDF), import, field picker.
+Export (CSV / JSON / XLSX / PDF) with field picker. Import from file. Wallet/date filters. `lastBackupAt` stamp.
 
 ## v1.6.0.0 — AI Assistant
 
-User-supplied API key, chat, presets (Groq / Gemini / OpenRouter).
+User-supplied API key, chat UI, presets for Groq / Gemini / OpenRouter, streaming.
 
 ## v1.7.0.0 — Settings & Help
 
-Profile, security, appearance, data, about. Help index + troubleshooting.
+Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), about. Full Help index + troubleshooting replacing the temporary page.
 
 ## v2.0.0.0 — Polish & Release
 
-Bug sweep, a11y pass, perf pass, real PWA icon set, docs freeze.
+Bug sweep, a11y audit, perf pass, real PWA icon set (192/512/maskable PNGs), docs freeze.

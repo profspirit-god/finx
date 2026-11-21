@@ -22,6 +22,17 @@ Root cause
 
 ## Entries
 
+### BUG-20261121-01 — Wizard Back discarded field edits
+
+- Status: fixed
+- Version found: 1.2.0.0 (Phase D)
+- Version fixed: 1.2.0.0 (Phase D rewrite)
+- Files touched: `src/features/wallets/components/CreateWizard/*`
+- Symptoms: typing a value, clicking Back, then Next re-showed the older value
+- Root cause: each step held its own `useState` initialized from `initial`; the shell's Back button only changed step, never captured the step's current state, so unsaved edits were lost on re-mount
+- Fix: lifted all wizard state into a single `draft` object in `WizardShell`; each step is now controlled (`draft` + `onChange`), updates field state on every keystroke
+- Regression test: yes — manual walk-through in Phase D smoke test
+
 ### BUG-20261120-08 — PersonalizeInput wrong import path
 
 - Status: fixed
