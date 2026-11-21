@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Input } from '@/ui';
 import { formatMinor, parseToMinor } from '@/lib/format/currency';
 import type { WizardDraft } from './WizardShell';
+import { useCurrency } from '@/lib/hooks/useCurrency';
 
 type Props = {
   draft: WizardDraft;
@@ -13,6 +14,7 @@ export default function StepStartingMoney({ draft, onChange, onNext }: Props) {
   const [error, setError] = useState<string | null>(null);
   const raw = draft.startingBalanceMinor > 0 ? (draft.startingBalanceMinor / 100).toString() : '';
   const parsed = parseToMinor(raw) ?? 0;
+  const currency = useCurrency();
 
   const submit = () => {
     if (parsed < 0) return setError('Enter a valid non-negative amount.');
@@ -39,7 +41,7 @@ export default function StepStartingMoney({ draft, onChange, onNext }: Props) {
         }}
         inputMode="decimal"
         error={error ?? undefined}
-        hint={parsed > 0 ? `You'll start at ${formatMinor(parsed, 'USD')}` : 'Enter 0 if this wallet is empty.'}
+        hint={parsed > 0 ? `You'll start at ${formatMinor(parsed, currency)}` : 'Enter 0 if this wallet is empty.'}
         autoFocus
       />
 
