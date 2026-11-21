@@ -22,15 +22,15 @@ First-run wizard, forced lock after onboarding, 4-digit PIN gate. AuthProvider +
 
 ## v1.2.0.0 — Wallets
 
-Wallets repo + store. List, 5-step progressive create wizard, detail with meta grid + goal bar, archive/delete. Error code system (11 codes) + ErrorPage + Help reference.
+Wallets repo + store, 5-step progressive create wizard, detail with meta grid + goal bar, archive/delete. Error code system (11 codes) + ErrorPage + Help reference tables.
 
 ## v1.3.0.0 — Records
 
-Records repo + receipts + store. List with filters. Form with per-field inline errors, sticky action bar, toast feedback, receipt upload, transfer pairs. Detail with inline edit, pair-aware delete, receipt viewer. Wallet audit log wired to live records.
+Records repo + receipts + store. List with filters, create form (inline errors, sticky bar, toasts, receipt upload, transfers), detail with inline edit + pair-aware delete + receipt viewer. Wallet audit log wired to live records.
 
 ## v1.4.0.0 — Dashboard
 
-Summary cards (total money, income, expenses, investments). Rate cards (monthly / daily / yearly income & expense rates). Net-worth + cashflow charts (Recharts). Empty dashboard state with quick actions.
+Stats layer, summary cards (money / income / expense / investments), rate cards (monthly/daily/yearly with toggle), net worth area chart, cashflow bar chart, investment donut, recent activity list, time range selector, empty state, loading skeletons.
 
 ## v1.5.0.0 — Data Tools
 
@@ -46,4 +46,4 @@ Profile, security (PIN change, password change, re-onboard), appearance, data (e
 
 ## v2.0.0.0 — Polish & Release
 
-Bug sweep, a11y audit, perf pass, real PWA icon set (192 / 512 / maskable PNGs), live cross-tab sync, docs freeze.
+Bug sweep, a11y audit, perf pass, real PWA icon set (192 / 512 / maskable PNGs), live cross-tab sync, dashboard grid gap fix, docs freeze.
