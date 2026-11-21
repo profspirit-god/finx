@@ -12,6 +12,7 @@ import CashflowChart from './components/CashflowChart';
 import InvestmentDonut from './components/InvestmentDonut';
 import RecentActivity from './components/RecentActivity';
 import type { TimeRange } from './lib/stats';
+import { useCurrency } from '@/lib/hooks/useCurrency';
 
 type RateMode = 'month' | 'day' | 'year';
 
@@ -21,9 +22,10 @@ export default function DashboardPage() {
   const { stats, loading, error } = useDashboardStats(range);
   const { wallets } = useWallets();
 
+  const settingsCurrency = useCurrency();
   const currency = useMemo(
-    () => wallets.find((w) => !w.archived)?.currency ?? 'USD',
-    [wallets],
+    () => wallets.find((w) => !w.archived)?.currency ?? settingsCurrency,
+    [wallets, settingsCurrency],
   );
 
   if (error) {
