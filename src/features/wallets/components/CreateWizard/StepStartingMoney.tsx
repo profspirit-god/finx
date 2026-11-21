@@ -1,26 +1,23 @@
 import { useState } from 'react';
 import { Button, Input } from '@/ui';
 import { formatMinor, parseToMinor } from '@/lib/format/currency';
+import type { WizardDraft } from './WizardShell';
 
 type Props = {
-  initial: { startingBalanceMinor: number };
-  saving: boolean;
-  onBack: () => void;
-  onSave: (patch: { startingBalanceMinor: number }) => void;
+  draft: WizardDraft;
+  onChange: (patch: Partial<WizardDraft>) => void;
+  onNext: () => void;
 };
 
-export default function StepStartingMoney({ initial, saving, onBack, onSave }: Props) {
-  const [raw, setRaw] = useState(
-    initial.startingBalanceMinor > 0 ? (initial.startingBalanceMinor / 100).toString() : '',
-  );
+export default function StepStartingMoney({ draft, onChange, onNext }: Props) {
   const [error, setError] = useState<string | null>(null);
-
-  const parsed = raw === '' ? 0 : parseToMinor(raw);
+  const raw = draft.startingBalanceMinor > 0 ? (draft.startingBalanceMinor / 100).toString() : '';
+  const parsed = parseToMinor(raw) ?? 0;
 
   const submit = () => {
-    if (parsed === null || parsed < 0) return setError('Enter a valid non-negative amount.');
+    if (parsed < 0) return setError('Enter a valid non-negative amount.');
     setError(null);
-    onSave({ startingBalanceMinor: parsed });
+    onNext();
   };
 
   return (
@@ -36,18 +33,18 @@ export default function StepStartingMoney({ initial, saving, onBack, onSave }: P
         label="Amount"
         placeholder="0.00"
         value={raw}
-        onChange={(e) => setRaw(e.target.value)}
+        onChange={(e) => {
+          const p = parseToMinor(e.target.value) ?? 0;
+          onChange({ startingBalanceMinor: p });
+        }}
         inputMode="decimal"
         error={error ?? undefined}
-        hint={parsed !== null && parsed > 0 ? `You'll start at ${formatMinor(parsed, 'USD')}` : 'Enter 0 if this wallet is empty.'}
+        hint={parsed > 0 ? `You'll start at ${formatMinor(parsed, 'USD')}` : 'Enter 0 if this wallet is empty.'}
         autoFocus
       />
 
-      <div className="flex items-center justify-between pt-2">
-        <Button variant="ghost" onClick={onBack} disabled={saving}>Back</Button>
-        <Button onClick={submit} loading={saving}>
-          {saving ? 'Creating…' : 'Create wallet'}
-        </Button>
+      <div className="flex justify-end pt-2">
+        <Button onClick={submit}>Next</Button>
       </div>
     </div>
   );

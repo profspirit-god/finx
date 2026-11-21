@@ -5,38 +5,45 @@ import { Button } from '@/ui';
 import StepName from './StepName';
 import StepDescription from './StepDescription';
 import StepStartingMoney from './StepStartingMoney';
+import StepGoal from './StepGoal';
+import StepReview from './StepReview';
 import type { WalletInput } from '@/types/wallet';
 import { useWallets } from '@/features/wallets/hooks/useWallets';
 
-type Draft = {
+export type WizardDraft = {
   name: string;
   description: string;
   type: WalletInput['type'];
   color: string;
   startingBalanceMinor: number;
+  targetAmountMinor: number | null;
+  targetDate: number | null;
 };
 
-const DEFAULT_COLOR = '#F5B800';
-
-const INITIAL: Draft = {
+const INITIAL: WizardDraft = {
   name: '',
   description: '',
   type: 'cash',
-  color: DEFAULT_COLOR,
+  color: '#F5B800',
   startingBalanceMinor: 0,
+  targetAmountMinor: null,
+  targetDate: null,
 };
 
 export default function WizardShell() {
   const navigate = useNavigate();
   const { create } = useWallets();
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState<Draft>(INITIAL);
+  const [draft, setDraft] = useState<WizardDraft>(INITIAL);
   const [saving, setSaving] = useState(false);
 
-  const totalSteps = 3;
+  const totalSteps = 5;
   const pct = Math.round((step / totalSteps) * 100);
 
   const close = () => navigate('/wallets');
+  const patch = (p: Partial<WizardDraft>) => setDraft((d) => ({ ...d, ...p }));
+  const next = () => setStep((s) => Math.min(totalSteps, s + 1));
+  const back = () => (step > 1 ? setStep(step - 1) : close());
 
   const save = async () => {
     setSaving(true);
@@ -49,8 +56,8 @@ export default function WizardShell() {
         startingBalanceMinor: draft.startingBalanceMinor,
         color: draft.color,
         iconKey: null,
-        targetAmountMinor: null,
-        targetDate: null,
+        targetAmountMinor: draft.targetAmountMinor,
+        targetDate: draft.targetDate,
       });
       navigate(`/wallets/${wallet.id}`, { replace: true });
     } catch (err) {
@@ -62,16 +69,10 @@ export default function WizardShell() {
   return (
     <div className="max-w-xl mx-auto">
       <div className="flex items-center justify-between gap-3 mb-6">
-        <Button
-          variant="ghost"
-          leftIcon={<ArrowLeft size={16} strokeWidth={2} />}
-          onClick={() => (step > 1 ? setStep(step - 1) : close())}
-        >
+        <Button variant="ghost" leftIcon={<ArrowLeft size={16} strokeWidth={2} />} onClick={back}>
           {step > 1 ? 'Back' : 'Cancel'}
         </Button>
-        <p className="text-xs text-dim">
-          Step {step} of {totalSteps}
-        </p>
+        <p className="text-xs text-dim">Step {step} of {totalSteps}</p>
         <button
           onClick={close}
           aria-label="Close"
@@ -89,34 +90,12 @@ export default function WizardShell() {
       </div>
 
       <div className="glass-strong p-6">
-        {step === 1 && (
-          <StepName
-            initial={draft}
-            onNext={(patch) => {
-              setDraft((d) => ({ ...d, ...patch }));
-              setStep(2);
-            }}
-          />
-        )}
-        {step === 2 && (
-          <StepDescription
-            initial={draft}
-            onNext={(patch) => {
-              setDraft((d) => ({ ...d, ...patch }));
-              setStep(3);
-            }}
-          />
-        )}
-        {step === 3 && (
-          <StepStartingMoney
-            initial={draft}
-            saving={saving}
-            onBack={() => setStep(2)}
-            onSave={(patch) => {
-              setDraft((d) => ({ ...d, ...patch }));
-              void save();
-            }}
-          />
+        {step === 1 && <StepName draft={draft} onChange={patch} onNext={next} />}
+        {step === 2 && <StepDescription draft={draft} onChange={patch} onNext={next} />}
+        {step === 3 && <StepStartingMoney draft={draft} onChange={patch} onNext={next} />}
+        {step === 4 && <StepGoal draft={draft} onChange={patch} onNext={next} />}
+        {step === 5 && (
+          <StepReview draft={draft} saving={saving} onBack={back} onCreate={() => void save()} />
         )}
       </div>
     </div>

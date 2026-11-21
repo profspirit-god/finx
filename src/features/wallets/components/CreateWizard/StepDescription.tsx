@@ -1,14 +1,13 @@
-import { useState } from 'react';
 import { Button, Input } from '@/ui';
+import type { WizardDraft } from './WizardShell';
 
 type Props = {
-  initial: { description: string };
-  onNext: (patch: { description: string }) => void;
+  draft: WizardDraft;
+  onChange: (patch: Partial<WizardDraft>) => void;
+  onNext: () => void;
 };
 
-export default function StepDescription({ initial, onNext }: Props) {
-  const [description, setDescription] = useState(initial.description);
-
+export default function StepDescription({ draft, onChange, onNext }: Props) {
   return (
     <div className="space-y-5">
       <div>
@@ -19,15 +18,13 @@ export default function StepDescription({ initial, onNext }: Props) {
       <Input
         label="Description"
         placeholder="e.g. Daily spending, Long-term savings"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        value={draft.description}
+        onChange={(e) => onChange({ description: e.target.value })}
         autoFocus
       />
 
       <div className="flex justify-end pt-2">
-        <Button onClick={() => onNext({ description: description.trim() })}>
-          Next
-        </Button>
+        <Button onClick={onNext}>Next</Button>
       </div>
     </div>
   );

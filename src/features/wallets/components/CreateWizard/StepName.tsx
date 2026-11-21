@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Input, Select } from '@/ui';
-import type { WalletInput, WalletType } from '@/types/wallet';
-import { WALLET_TYPE_LABELS } from '@/types/wallet';
+import { WALLET_TYPE_LABELS, type WalletInput, type WalletType } from '@/types/wallet';
+import type { WizardDraft } from './WizardShell';
 
 const WALLET_TYPES = (['cash', 'bank', 'e-wallet', 'investment', 'other'] as WalletType[]).map(
   (t) => ({ value: t, label: WALLET_TYPE_LABELS[t] }),
@@ -10,20 +10,19 @@ const WALLET_TYPES = (['cash', 'bank', 'e-wallet', 'investment', 'other'] as Wal
 const COLORS = ['#F5B800', '#5CA8FF', '#4ADE80', '#FF9F45', '#FF5C5C', '#A78BFA'];
 
 type Props = {
-  initial: { name: string; type: WalletInput['type']; color: string };
-  onNext: (patch: { name: string; type: WalletInput['type']; color: string }) => void;
+  draft: WizardDraft;
+  onChange: (patch: Partial<WizardDraft>) => void;
+  onNext: () => void;
 };
 
-export default function StepName({ initial, onNext }: Props) {
-  const [name, setName] = useState(initial.name);
-  const [type, setType] = useState<WalletInput['type']>(initial.type);
-  const [color, setColor] = useState(initial.color);
+export default function StepName({ draft, onChange, onNext }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const submit = () => {
-    if (name.trim().length < 2) return setError('Name must be at least 2 characters.');
+    if (draft.name.trim().length < 2) return setError('Name must be at least 2 characters.');
     setError(null);
-    onNext({ name: name.trim(), type, color });
+    onChange({ name: draft.name.trim() });
+    onNext();
   };
 
   return (
@@ -36,16 +35,16 @@ export default function StepName({ initial, onNext }: Props) {
       <Input
         label="Wallet name"
         placeholder="e.g. Cash on hand, BPI Savings, GCash"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={draft.name}
+        onChange={(e) => onChange({ name: e.target.value })}
         error={error ?? undefined}
         autoFocus
       />
 
       <Select
         label="Wallet type"
-        value={type}
-        onChange={(e) => setType(e.target.value as WalletInput['type'])}
+        value={draft.type}
+        onChange={(e) => onChange({ type: e.target.value as WalletInput['type'] })}
         options={WALLET_TYPES}
       />
 
@@ -56,13 +55,13 @@ export default function StepName({ initial, onNext }: Props) {
             <button
               key={c}
               type="button"
-              onClick={() => setColor(c)}
+              onClick={() => onChange({ color: c })}
               aria-label={`Pick color ${c}`}
               className={[
                 'w-8 h-8 rounded-full transition-transform',
-                color === c ? 'ring-2 ring-offset-2 ring-offset-[var(--bg)] scale-110' : '',
+                draft.color === c ? 'ring-2 ring-offset-2 ring-offset-[var(--bg)] scale-110' : '',
               ].join(' ')}
-              style={{ background: c, boxShadow: color === c ? `0 0 0 2px ${c}` : undefined }}
+              style={{ background: c }}
             />
           ))}
         </div>
