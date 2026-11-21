@@ -2,6 +2,7 @@ import type { ReactElement } from 'react';
 import { LockScreen } from '@/features/lock';
 import { OnboardingWizard } from '@/features/onboarding';
 import { WalletList, WalletDetail, WizardShell } from '@/features/wallets';
+import { RecordList, RecordForm, RecordDetail } from '@/features/records';
 import { useAuthStore } from '@/features/auth';
 import { Button } from '@/ui';
 
@@ -108,7 +109,9 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/wallets',      element: <WalletList /> },
   { path: '/wallets/new',  element: <WizardShell /> },
   { path: '/wallets/:id',  element: <WalletDetail /> },
-  { path: '/records',      element: <Placeholder label="Records" /> },
+  { path: '/records',      element: <RecordList /> },
+  { path: '/records/new',  element: <RecordForm /> },
+  { path: '/records/:id',  element: <RecordDetail /> },
   { path: '/data-tools',   element: <Placeholder label="Data Tools" /> },
   { path: '/ai',           element: <Placeholder label="AI Assistant" /> },
   { path: '/settings',     element: <Placeholder label="Settings" /> },
