@@ -22,6 +22,39 @@ Root cause
 
 ## Entries
 
+### BUG-20261121-03 — Wallets store not hydrated on record pages after reload
+
+- Status: fixed
+- Version found: 1.3.0.0 (Phase E)
+- Version fixed: 1.3.0.0 (Phase E.1)
+- Files touched: `src/features/records/components/RecordForm.tsx`, `RecordList.tsx`, `RecordRow.tsx`, `RecordDetail.tsx`, `src/features/wallets/components/WalletDetail.tsx`
+- Symptoms: after `Ctrl+R` on `/records/new`, page showed "no wallets" even when wallets existed, until another page hydrated the store. Similar flash on `/wallets/:id` (wallet not found) before wallets loaded.
+- Root cause: components read `useWalletsStore((s) => s.wallets)` directly without triggering a load. Only `WalletList` (via `useWallets()` hook) hydrated the store.
+- Fix: every page / row that reads wallets now uses `useWallets()` which fires `refresh()` when store is `idle`. `RecordForm` and `WalletDetail` show skeletons while `loadState` is `idle` or `loading`.
+- Regression test: yes — two-tab reload scenario, throttle-to-3G scenario
+
+### BUG-20261121-02 — `Record` type shadows TS built-in `Record<K,V>`
+
+- Status: fixed
+- Version found: 1.3.0.0 (Phase A)
+- Version fixed: 1.3.0.0 (Phase A)
+- Files touched: `src/types/record.ts`
+- Symptoms: `TS2315: Type 'Record' is not generic` on `RECORD_CLASS_LABELS` / `RECORD_CLASS_TONES`
+- Root cause: our domain type `Record` shadows TypeScript's utility `Record<K, V>`
+- Fix: replaced the generic map types with explicit literal-type aliases (`ClassLabels`, `ClassTones`)
+- Regression test: no (build is the check)
+
+### BUG-20261121-01 — Wizard Back discarded field edits
+
+- Status: fixed
+- Version found: 1.2.0.0 (Phase D)
+- Version fixed: 1.2.0.0 (Phase D)
+- Files touched: `src/features/wallets/components/CreateWizard/*`
+- Symptoms: typing a value, clicking Back, then Next re-showed the older value
+- Root cause: per-step `useState(initial)` initialized only on mount; Back only changed step, never captured the step's current state
+- Fix: lifted state to `WizardShell.draft`; steps became controlled components
+- Regression test: yes
+
 ### BUG-20261121-01 — Wizard Back discarded field edits
 
 - Status: fixed

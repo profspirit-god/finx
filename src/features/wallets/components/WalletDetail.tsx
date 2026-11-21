@@ -11,6 +11,7 @@ import { formatDate } from '@/lib/format/date';
 import WalletGoalBar from './WalletGoalBar';
 import WalletAuditLog from './WalletAuditLog';
 import { ErrorPage } from '@/features/errors';
+import { useWallets } from '@/features/wallets/hooks/useWallets';
 
 const ICONS: Record<WalletType, typeof WalletIcon> = {
   cash: Banknote,
@@ -23,7 +24,7 @@ const ICONS: Record<WalletType, typeof WalletIcon> = {
 export default function WalletDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const wallets = useWalletsStore((s) => s.wallets);
+  const { wallets, loadState: walletsLoadState } = useWallets();
   const refreshOne = useWalletsStore((s) => s.refreshOne);
   const archive = useWalletsStore((s) => s.archive);
   const remove = useWalletsStore((s) => s.remove);
@@ -39,7 +40,7 @@ export default function WalletDetail() {
   if (!id) return <ErrorState title="Missing wallet id" />;
 
   if (!wallet) {
-    return <WalletLoadingOrNotFound id={id} />;
+    return <WalletLoadingOrNotFound id={id} loading={walletsLoadState === 'idle' || walletsLoadState === 'loading'} />;
   }
 
   if (wallet.archived) {
@@ -85,7 +86,7 @@ export default function WalletDetail() {
 
       <MetaGrid wallet={wallet} />
 
-      <WalletAuditLog walletId={wallet.id} />
+      <WalletAuditLog wallet={wallet} />
 
       <div className="flex flex-wrap gap-2 pt-2">
         <Button
@@ -173,14 +174,14 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-function WalletLoadingOrNotFound({ id }: { id: string }) {
+function WalletLoadingOrNotFound({ id, loading }: { id: string; loading: boolean }) {
   const [elapsed, setElapsed] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setElapsed(true), 600);
     return () => clearTimeout(t);
   }, []);
 
-  if (!elapsed) {
+  if (loading || !elapsed) {
     return (
       <div className="space-y-3">
         <Skeleton width={120} height={32} />
