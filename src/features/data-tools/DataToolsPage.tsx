@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Tabs } from '@/ui';
 import ExportPanel from './components/ExportPanel';
+import ImportPanel from './components/ImportPanel';
 
 export default function DataToolsPage() {
   const [tab, setTab] = useState('export');
@@ -22,11 +23,7 @@ export default function DataToolsPage() {
       />
 
       {tab === 'export' && <ExportPanel />}
-      {tab === 'import' && (
-        <div className="glass-strong p-5 text-sm text-dim">
-          Import arrives in Phase C.
-        </div>
-      )}
+      {tab === 'import' && <ImportPanel />}
     </div>
   );
 }
