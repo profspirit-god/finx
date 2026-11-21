@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Plus, Receipt } from 'lucide-react';
 import { Button, EmptyState, ErrorState, Skeleton } from '@/ui';
 import { useRecords } from '../hooks/useRecords';
-import { useWalletsStore } from '@/features/wallets/state/wallets.store';
 import RecordRow from './RecordRow';
 import RecordFilters, { type FilterState } from './RecordFilters';
 import { useWallets } from '@/features/wallets/hooks/useWallets';
