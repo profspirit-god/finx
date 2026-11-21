@@ -2,6 +2,7 @@
 
 ## Index
 
+- [v1.5.0.1](#v1501)
 - [v1.5.0.0](#v1500)
 - [v1.4.0.0](#v1400)
 - [v1.3.0.0](#v1300)
@@ -11,6 +12,14 @@
 - [v1.0.2.0](#v1020)
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
+
+## v1.5.0.1
+
+### Fixed
+
+- `Cannot access 'h' before initialization` on first record creation — circular static import between `records.store`, `wallets.store`, and `auth.store`. Replaced with lazy `await import()` inside actions.
+- `Cannot access 'walletId' before initialization` in `RecordForm` — `selectedWallet`/`currency` were declared before `walletId` state. Moved below the state declarations.
+- Components `RecordDetail`, `RecordForm`, `RecordList` — removed unused `useWalletsStore` static imports; use `useWallets()` hook.
 
 ## v1.5.0.0
 
