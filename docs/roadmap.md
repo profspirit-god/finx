@@ -14,7 +14,7 @@
 
 ## v1.0.x — Scaffold + Foundation
 
-Vite + TS + Tailwind + PWA + routing + shell + docs (v1.0.0.1 fixed the empty-file commit). Design system (v1.0.2.0). Storage, crypto, format, hooks, providers, bootstrap (v1.0.3.0).
+Vite + TS + Tailwind + PWA + routing + shell + docs. Design system. Storage, crypto, format, hooks, providers, bootstrap.
 
 ## v1.1.0.0 — Onboarding & Lock
 
@@ -22,7 +22,7 @@ First-run wizard, forced lock after onboarding, 4-digit PIN gate. AuthProvider +
 
 ## v1.2.0.0 — Wallets
 
-Wallets repo + store, 5-step progressive create wizard, detail with meta grid + goal bar, archive/delete. Error code system (11 codes) + ErrorPage + Help reference tables.
+Wallets repo + store, 5-step progressive wizard, detail with meta grid + goal bar, archive/delete. Error code system (11 codes) + ErrorPage + Help reference tables.
 
 ## v1.3.0.0 — Records
 
@@ -30,20 +30,20 @@ Records repo + receipts + store. List with filters, create form (inline errors, 
 
 ## v1.4.0.0 — Dashboard
 
-Stats layer, summary cards (money / income / expense / investments), rate cards (monthly/daily/yearly with toggle), net worth area chart, cashflow bar chart, investment donut, recent activity list, time range selector, empty state, loading skeletons.
+Stats layer, summary cards, rate cards, net worth / cashflow / investment charts, recent activity, time range selector, empty state.
 
 ## v1.5.0.0 — Data Tools
 
-Export (CSV / JSON / XLSX / PDF) with field picker. Import from file. Wallet / date filters. `lastBackupAt` stamp.
+Full backup export (JSON), record export (CSV / JSON / XLSX / PDF with field picker + filters), full backup import (merge / replace with custom Dialog), currency plumbing (`useCurrency`), wipe-all-data on Help page.
 
 ## v1.6.0.0 — AI Assistant
 
-User-supplied API key, chat UI, presets (Groq / Gemini / OpenRouter), streaming.
+User-supplied API key, chat UI, presets (Groq / Gemini / OpenRouter), streaming responses, provider settings.
 
 ## v1.7.0.0 — Settings & Help
 
-Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), about. Full Help index + troubleshooting, replacing the temporary page.
+Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), about. **Retroactive currency migration** — convert existing wallets when the settings currency changes. Full Help index + troubleshooting, replacing the temporary page.
 
 ## v2.0.0.0 — Polish & Release
 
-Bug sweep, a11y audit, perf pass, real PWA icon set (192 / 512 / maskable PNGs), live cross-tab sync, dashboard grid gap fix, docs freeze.
+Bug sweep, a11y audit, perf pass (lazy-load Data Tools to fix bundle size), real PWA icon set (192 / 512 / maskable PNGs), live cross-tab sync, dashboard grid gap fix, docs freeze.

@@ -22,6 +22,28 @@ Root cause
 
 ## Entries
 
+### BUG-20261121-06 — `useCurrency()` called at module scope
+
+- Status: fixed
+- Version found: 1.5.0.0 (Phase D)
+- Version fixed: 1.5.0.0 (Phase D)
+- Files touched: `src/features/wallets/components/CreateWizard/StepGoal.tsx`, `StepReview.tsx`
+- Symptoms: `Warning: Invalid hook call` + `Cannot read properties of null (reading 'useState')` on the wizard's Goal and Review steps
+- Root cause: `const currency = useCurrency();` was placed outside the component function (module scope)
+- Fix: moved inside component body, after the function signature
+- Regression test: yes — manual walkthrough of the full wizard
+
+### BUG-20261121-05 — Record JSON export was not importable
+
+- Status: fixed
+- Version found: 1.5.0.0 (Phase C)
+- Version fixed: 1.5.0.0 (Phase C1)
+- Files touched: `src/features/data-tools/components/ExportPanel.tsx`
+- Symptoms: users exported JSON from "Export records", tried to import it, got "Not a FinX backup file"
+- Root cause: record-array JSON and full-backup JSON are two different shapes; only the latter has `app: 'FinX'` / version / users / wallets stores
+- Fix: added a distinct **Download full backup** card on Export tab; labeled record export as "not importable"
+- Regression test: yes
+
 ### BUG-20261121-04 — Investment donut empty leaves grid gap
 
 - Status: open (deferred)
