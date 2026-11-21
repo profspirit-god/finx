@@ -7,3 +7,5 @@ export { default as RecordRow } from './components/RecordRow';
 export { default as RecordFilters } from './components/RecordFilters';
 export { default as RecordForm } from './components/RecordForm';
 export { default as RecordDetail } from './components/RecordDetail';
+export { default as ReceiptUploader } from './components/ReceiptUploader';
+export { default as ReceiptViewer } from './components/ReceiptViewer';
