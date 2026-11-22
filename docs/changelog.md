@@ -13,6 +13,44 @@
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
 
+## v1.6.0.0
+
+### Added
+
+- Supabase feedback sidecar (`src/lib/supabase.ts`, `src/features/feedback/`, `src/features/dev-mode/`):
+  - `src/lib/supabase.ts` — client singleton scoped to `finx` schema, sessionStorage persistence (`finx_dev_session`), graceful null when env vars missing
+  - `src/features/feedback/` — types, submit (with friendly error mapping), `FeedbackFab` (gold circular button + menu), `FeedbackForm` (modal with validation, counter, copy-to-clipboard fallback)
+  - `src/features/dev-mode/` — `signInDev` / `signOutDev` / `getDevSession` / `isAdminSession` (calls `finx.is_admin()` RPC), `DevGuard`, `DevLogin`, `DevDashboard` (feedback inbox with type/handled filters, pagination, mark-handled toggle, `LocalStatsCard`, warning banner), `listFeedback`, `setHandled`
+- `/dev-login` route (fullscreen, no sidebar, no FAB)
+- `/dev` route (inside AppShell, guarded by `DevGuard`, no FAB)
+- `.env.example` now includes `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` placeholders
+- `@supabase/supabase-js` dependency
+
+### Changed
+
+- `src/layout/AppShell.tsx` — mounts `<FeedbackFab pathname={pathname} />` at shell level
+- `src/App.tsx` — `/dev-login` added to `FULLSCREEN_ROUTES`
+- `src/app/router/routes.tsx` — `/dev-login` and `/dev` wired to `DevLogin` and `DevGuard`+`DevDashboard`
+
+### Architecture note
+
+- **FinX now has a Supabase sidecar** for feedback only. All financial data remains device-local in IndexedDB. Only voluntary feedback submissions cross the network. See `docs/proposal-supabase-feedback.md` and `docs/ai-instructions.md §13` for the full model, constraints, and RLS design.
+
+### Security
+
+- `finx` schema isolated from Class Funds' `cf_*` namespace (shared Supabase project)
+- `finx.is_admin()` is a `security definer` function with `execute` revoked from `anon` — required because `admin_users` RLS blocks direct `exists` subqueries
+- Admin seeded once via SQL (`finx.admin_users`), not derived from email claim
+- Session stored in `sessionStorage` (survives refresh, cleared on tab close)
+- Password rotated after accidental chat exposure during setup
+
+### Known gaps
+
+- No in-app delete for feedback rows — admin uses SQL Editor (documented in dev dashboard)
+- No rate limiting on feedback inserts — beta-scale acceptable, revisit if spam appears
+- `handled` field only toggles; no "notes" field for triage
+- D4 entry-point confirmed as floating action button (was ambiguous in initial proposal)
+
 ## v1.5.0.1
 
 ### Fixed

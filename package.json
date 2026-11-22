@@ -1,7 +1,7 @@
 {
   "name": "finx",
   "private": true,
-  "version": "1.5.0.1",
+  "version": "1.6.0.0",
   "type": "module",
   "description": "FinX — minimalist glassmorphism personal finance. By profspirit-god studio 2026.",
   "scripts": {
@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
     "framer-motion": "^11.11.17",
     "idb": "^8.0.0",
     "jspdf": "^4.2.1",
