@@ -4,8 +4,12 @@ import { routes } from '@/app/router/routes';
 import { AuthGuard } from '@/app/router/guards';
 import { ErrorPage } from '@/features/errors';
 
-const SHELL_ROUTES = routes.filter((r) => r.path !== '/lock' && r.path !== '/onboarding');
-const FULLSCREEN_ROUTES = routes.filter((r) => r.path === '/lock' || r.path === '/onboarding');
+const FULLSCREEN_ROUTES = routes.filter(
+  (r) => r.path === '/lock' || r.path === '/onboarding' || r.path === '/dev-login',
+);
+const SHELL_ROUTES = routes.filter(
+  (r) => r.path !== '/lock' && r.path !== '/onboarding' && r.path !== '/dev-login',
+);
 
 export default function App() {
   return (

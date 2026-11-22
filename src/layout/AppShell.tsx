@@ -1,8 +1,10 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar/Sidebar';
 import TopBar from './TopBar/TopBar';
+import { FeedbackFab } from '@/features/feedback';
 
 export default function AppShell() {
+  const { pathname } = useLocation();
   return (
     <div className="relative min-h-screen flex">
       <Sidebar />
@@ -12,6 +14,7 @@ export default function AppShell() {
           <Outlet />
         </main>
       </div>
+      <FeedbackFab pathname={pathname} />
     </div>
   );
 }

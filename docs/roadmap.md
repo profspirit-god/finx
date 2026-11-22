@@ -37,42 +37,30 @@ Stats layer, summary cards, rate cards, net worth / cashflow / investment charts
 
 ## v1.5.0.0 — Data Tools
 
-Full backup export (JSON), record export (CSV / JSON / XLSX / PDF with field picker + filters), full backup import (merge / replace with custom Dialog), currency plumbing (useCurrency), wipe-all-data on Help page.
+Full backup export (JSON), record export (CSV / JSON / XLSX / PDF with field picker + filters), full backup import (merge / replace with custom Dialog), currency plumbing (`useCurrency`), wipe-all-data on Help page.
 
 ## v1.5.0.1 — Circular import + TDZ hotfix
 
-Broke circular store import (records.store → wallets.store → auth.store); fixed walletId TDZ in RecordForm. Hotfix on main only, no feature scope.
+Broke circular store import (`records.store` → `wallets.store` → `auth.store`); fixed `walletId` TDZ in `RecordForm`. Hotfix on `main` only, no feature scope.
 
 ## v1.6.0.0 — Supabase Feedback + Dev Mode
 
-**Blocked on owner + Claude (Supabase specialist) completing the server side.**
+**Complete.** Supabase sidecar for beta feedback. Users submit bug reports and idea suggestions via floating action button; stored in `finx.feedback` on shared Supabase project (isolated `finx` schema, zero `cf_*` interference). Owner signs in at hidden `/dev-login` with email/password; reads inbox at `/dev` with type/handled filters, pagination, mark-handled toggle, and local app stats card.
 
-Owner-side Supabase deliverables (before FinX code work resumes):
-
-- finx schema created, finx.feedback + finx.admin_users tables, RLS, grants
-- finx schema exposed via API
-- Admin user created in auth.users
-- Admin auth.uid() seeded in finx.admin_users
-- Project URL + anon key handed to FinX repo
-- Verification queries pass
-
-FinX coding phases (after Supabase done):
-
-- A: env template, src/lib/supabase.ts, feedback types + submit
-- B: Feedback FAB + form, wired into AppShell
-- C: Dev auth — /dev-login, session in sessionStorage, DevGuard
-- D: Dev dashboard — feedback inbox, filters, mark handled, local stats
-- E: Version bump, docs, Help/Privacy updates, merge, tag
-
-Full proposal: docs/proposal-supabase-feedback.md.
+- `src/lib/supabase.ts` — client singleton, session in `sessionStorage`
+- `src/features/feedback/` — FAB, form, submit, copy-to-clipboard fallback
+- `src/features/dev-mode/` — auth, guard, login, dashboard, API helpers
+- Admin identified via `finx.admin_users` seed + `finx.is_admin()` security-definer function
+- Full proposal: `docs/proposal-supabase-feedback.md`
+- Known gaps: no in-app delete, no rate limiting on inserts, `handled` only (no triage notes)
 
 ## v1.7.0.0 — AI Assistant (deferred)
 
-Was originally v1.6.0.0; deferred so v1.6.0.0 could prioritize real beta feedback before the beta testers lose interest. User-supplied API key, chat UI, presets (Groq / Gemini / OpenRouter), streaming responses, provider settings. May be reordered again based on feedback volume from v1.6.0.0.
+Was originally v1.6.0.0; deferred so v1.6.0.0 could prioritize real beta feedback. User-supplied API key, chat UI, presets (Groq / Gemini / OpenRouter), streaming responses, provider settings. May be reordered again based on feedback volume from v1.6.0.0.
 
 ## v1.8.0.0 — Settings & Help
 
-Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), about. Retroactive currency migration — convert existing wallets when settings currency changes. Full Help index + troubleshooting, replacing the temporary page. Feedback troubleshooting (Supabase paused, offline submission fallback).
+Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), about. **Retroactive currency migration** — convert existing wallets when settings currency changes. Full Help index + troubleshooting, replacing the temporary page. Feedback troubleshooting (Supabase paused, offline submission fallback).
 
 ## v2.0.0.0 — Polish & Release
 
@@ -80,6 +68,6 @@ Bug sweep, a11y audit, perf pass (lazy-load Data Tools + Dev Mode to keep main b
 
 ## Roadmap change log
 
-- **2026-11-21** — v1.6.0.0 reordered: AI Assistant deferred to v1.7.0.0; Supabase Feedback + Dev Mode inserted as new v1.6.0.0. Reason: beta testers need a bug-report channel now, before they lose interest. AI Assistant requires each user to supply their own API key, which is a high-friction ask for beta users.
-- **2026-11-21** — v1.5.0.1 hotfix inserted (circular import + TDZ). No roadmap impact beyond version numbering.
-- **2026-11-22** — v1.6.0.0 blocked pending Supabase server-side deliverables by owner + Claude. FinX code work paused until Supabase verification queries pass. Proposal: docs/proposal-supabase-feedback.md.
+- **2026-11-21** — v1.6.0.0 reordered: AI Assistant deferred to v1.7.0.0; Supabase Feedback + Dev Mode inserted as new v1.6.0.0.
+- **2026-11-21** — v1.5.0.1 hotfix inserted (circular import + TDZ).
+- **2026-11-22** — v1.6.0.0 Supabase side complete. FinX app code complete after Phases A–D. Merged and tagged.

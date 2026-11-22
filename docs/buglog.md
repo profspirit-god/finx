@@ -22,6 +22,29 @@ Root cause
 
 ## Entries
 
+### BUG-20261122-09 — Admin could not read finx.feedback despite correct seed
+
+- Status: fixed
+- Version found: 1.6.0.0 (Supabase setup)
+- Version fixed: 1.6.0.0 (Supabase setup)
+- Files touched: Supabase SQL only (`finx.is_admin()` function + rewritten feedback policies)
+- Symptoms: admin read of `finx.feedback` returned 0 rows; anon insert worked; `finx.admin_users` had correct `user_id`; `auth.uid()` matched
+- Root cause: `feedback_admin_select` policy used direct `exists (select 1 from finx.admin_users where user_id = auth.uid())` subquery. `finx.admin_users` has RLS enabled with **no policies**, so the subquery returned 0 rows for the `authenticated` role — making the `exists` always false
+- Fix: introduced `finx.is_admin()` as a `security definer` function (runs as owner, bypasses `admin_users` RLS). Rewrote `feedback_admin_select` and `feedback_admin_update` to call `finx.is_admin()`. Revoked execute from `public, anon`, granted only to `authenticated`
+- Regression test: yes — verified admin read works, anon read denied (42501)
+- **Mandatory pattern going forward:** any cross-table admin check in `finx` schema must use `security definer` functions, not direct subqueries against RLS-locked tables
+
+### BUG-20261122-10 — `.env.local` not loaded by Vite, FAB invisible
+
+- Status: fixed
+- Version found: 1.6.0.0 (Phase B smoke test)
+- Version fixed: 1.6.0.0 (Phase B smoke test)
+- Files touched: `.env.local` (user-created)
+- Symptoms: `FeedbackFab` returned null; `import.meta.env.VITE_SUPABASE_URL` was undefined
+- Root cause: `.env.local` was likely saved as `.env.local.txt` (Notepad default), so Vite never read it. Also dev server was running before the file existed
+- Fix: created `.env.local` with correct extension; restarted `npm run dev` (Vite reads env only at startup)
+- Regression test: no (one-time environment issue)
+
 ### BUG-20261121-08 — `walletId` TDZ in RecordForm after circular fix
 
 - Status: fixed
@@ -44,7 +67,7 @@ Root cause
 - Fix: `records.store.refreshWallets()` and `auth.store.completePersonalization()` now use `await import()` inside actions — no static cross-store imports
 - Regression test: yes — cleared DB, onboarding, wallet + record creation
 
-### BUG-20261121-06 — `useCurrency()` called at module scope
+  ### BUG-20261121-06 — `useCurrency()` called at module scope
 
 - Status: fixed
 - Version found: 1.5.0.0 (Phase D)
