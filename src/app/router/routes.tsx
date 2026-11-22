@@ -8,7 +8,7 @@ import { Button, Dialog } from '@/ui';
 import { DashboardPage } from '@/features/dashboard';
 import { DataToolsPage } from '@/features/data-tools';
 import { useState } from 'react';
-import { DevGuard, DevLogin } from '@/features/dev-mode';
+import { DevGuard, DevLogin, DevDashboard } from '@/features/dev-mode';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -172,5 +172,5 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/lock',         element: <LockScreen /> },
   { path: '/onboarding',   element: <OnboardingWizard /> },
   { path: '/dev-login',  element: <DevLogin /> },
-  { path: '/dev',        element: <DevGuard><Placeholder label="Dev Dashboard (Phase D)" /></DevGuard> },
+  { path: '/dev',        element: <DevGuard><DevDashboard /></DevGuard> },
 ];
