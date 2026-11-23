@@ -13,6 +13,7 @@ import InvestmentDonut from './components/InvestmentDonut';
 import RecentActivity from './components/RecentActivity';
 import type { TimeRange } from './lib/stats';
 import { useCurrency } from '@/lib/hooks/useCurrency';
+import { DashboardNoticeBanner } from '@/features/notices';
 
 type RateMode = 'month' | 'day' | 'year';
 
@@ -43,6 +44,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 max-w-6xl">
+      <DashboardNoticeBanner />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Dashboard</h1>
