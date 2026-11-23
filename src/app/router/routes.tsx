@@ -9,6 +9,7 @@ import { DashboardPage } from '@/features/dashboard';
 import { DataToolsPage } from '@/features/data-tools';
 import { useState } from 'react';
 import { DevGuard, DevLogin, DevDashboard } from '@/features/dev-mode';
+import { NoticesPage } from '@/features/notices';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -168,6 +169,7 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/data-tools',   element: <DataToolsPage /> },
   { path: '/ai',           element: <Placeholder label="AI Assistant" /> },
   { path: '/settings',     element: <Placeholder label="Settings" /> },
+  { path: '/notices',    element: <NoticesPage /> },
   { path: '/help',         element: <HelpPage /> },
   { path: '/lock',         element: <LockScreen /> },
   { path: '/onboarding',   element: <OnboardingWizard /> },

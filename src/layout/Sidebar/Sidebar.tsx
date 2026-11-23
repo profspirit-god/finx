@@ -1,27 +1,37 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, Wallet, Receipt, Database, Sparkles, Settings, LifeBuoy, Menu, X,
+  LayoutDashboard, Wallet, Receipt, Database, Sparkles, Settings, LifeBuoy, Menu, X, Bell,
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
-import { Lock } from 'lucide-react';
-import { useAuthStore } from '@/features/auth';
+import { useNotices } from '@/features/notices';
 
-const NAV = [
-  { to: '/dashboard',  label: 'Dashboard',   Icon: LayoutDashboard },
-  { to: '/wallets',    label: 'Wallets',     Icon: Wallet },
-  { to: '/records',    label: 'Records',     Icon: Receipt },
-  { to: '/data-tools', label: 'Data Tools',  Icon: Database },
-  { to: '/ai',         label: 'AI Assistant',Icon: Sparkles },
-  { to: '/settings',   label: 'Settings',    Icon: Settings },
-  { to: '/help',       label: 'Help',        Icon: LifeBuoy },
+type NavItem = {
+  to: string;
+  label: string;
+  Icon: typeof LayoutDashboard;
+  badgeKey?: 'notices';
+};
+
+const NAV: NavItem[] = [
+  { to: '/dashboard',  label: 'Dashboard',    Icon: LayoutDashboard },
+  { to: '/notices',    label: 'Notices',      Icon: Bell, badgeKey: 'notices' },
+  { to: '/wallets',    label: 'Wallets',      Icon: Wallet },
+  { to: '/records',    label: 'Records',      Icon: Receipt },
+  { to: '/data-tools', label: 'Data Tools',   Icon: Database },
+  { to: '/ai',         label: 'AI Assistant', Icon: Sparkles },
+  { to: '/settings',   label: 'Settings',     Icon: Settings },
+  { to: '/help',       label: 'Help',         Icon: LifeBuoy },
 ];
 
 export default function Sidebar() {
   const [hovered, setHovered] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { unreadCount } = useNotices();
   const expanded = hovered;
-  const lock = useAuthStore((s) => s.lock);
+
+  const badgeFor = (item: NavItem) =>
+    item.badgeKey === 'notices' ? unreadCount : undefined;
 
   return (
     <>
@@ -51,9 +61,15 @@ export default function Sidebar() {
                 <X size={20} className="text-[var(--text-dim)]" />
               </button>
             </div>
-            {NAV.map(({ to, label, Icon }) => (
-              <div key={to} onClick={() => setMobileOpen(false)}>
-                <SidebarItem to={to} label={label} Icon={Icon} expanded />
+            {NAV.map((item) => (
+              <div key={item.to} onClick={() => setMobileOpen(false)}>
+                <SidebarItem
+                  to={item.to}
+                  label={item.label}
+                  Icon={item.Icon}
+                  expanded
+                  badge={badgeFor(item)}
+                />
               </div>
             ))}
           </motion.aside>
@@ -71,25 +87,19 @@ export default function Sidebar() {
           <Brand expanded={expanded} />
         </div>
         <nav className="flex-1 p-2 flex flex-col gap-1">
-          {NAV.map(({ to, label, Icon }) => (
-            <SidebarItem key={to} to={to} label={label} Icon={Icon} expanded={expanded} />
+          {NAV.map((item) => (
+            <SidebarItem
+              key={item.to}
+              to={item.to}
+              label={item.label}
+              Icon={item.Icon}
+              expanded={expanded}
+              badge={badgeFor(item)}
+            />
           ))}
         </nav>
-        <button
-        onClick={lock}
-        aria-label="Lock app"
-        className="mx-2 mb-2 flex items-center gap-3 h-11 px-3 rounded-xl text-[var(--text-dim)] hover:text-white hover:bg-white/5 transition-colors"
-        >
-        <Lock size={20} strokeWidth={1.75} className="shrink-0" />
-        <span className={[
-            'whitespace-nowrap text-sm font-medium transition-opacity duration-200',
-            expanded ? 'opacity-100' : 'opacity-0 pointer-events-none',
-        ].join(' ')}>
-            Lock now
-        </span>
-        </button>
         <div className="p-3 text-[10px] text-mute">
-          {expanded ? 'v1.0.0.1 — profspirit-god studio' : '©'}
+          {expanded ? 'v1.6.0.0 — profspirit-god studio' : '©'}
         </div>
       </motion.aside>
     </>

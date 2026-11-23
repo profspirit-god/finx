@@ -13,6 +13,32 @@
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
 
+## v1.7.0.0
+
+### Added
+
+- In-app Notice / Inbox (`src/features/notices/`):
+  - `content.ts` — bundled notice list (newest first). Current notices: v1.6.0.0, v1.4.0.0, v1.3.0.0, v1.5.0.0 features + beta thank-you.
+  - `types.ts` — `Notice`, `NoticeCategory`, `NoticeState`
+  - `state/notices.store.ts` — Zustand store, read/dismiss state persisted to IndexedDB (`settings` store, id: `notices`)
+  - `hooks/useNotices.ts` — returns visible list, unread list, unread count
+  - `components/NoticesPage.tsx` — `/notices` list, category pills, read/unread state, "Mark all as read"
+  - `components/NoticeDetailDialog.tsx` — modal with category banner, action link, dismiss button (if dismissable)
+  - `components/DashboardNoticeBanner.tsx` — dashboard top banner showing the latest unread notice; dismissible for the session
+- Sidebar "Notices" item with unread badge (gold pill when expanded, dot when collapsed)
+- `/notices` route
+
+### Changed
+
+- `Sidebar.tsx` — added Notices nav item with `badgeKey`; `SidebarItem` accepts optional `badge` number
+- `DashboardPage.tsx` — mounts `<DashboardNoticeBanner />` at the top
+- Notice content is bundled with the app (not fetched from Supabase). To add a notice, edit `src/features/notices/content.ts` and deploy.
+
+### Known gaps
+
+- Notices are not pushable without a deploy (Supabase-backed notices deferred to later if needed)
+- The beta thank-you notice is permanently unreadable-dismissible (`dismissable: false`); it stays in the list forever
+
 ## v1.6.0.0
 
 ### Added
