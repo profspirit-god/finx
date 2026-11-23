@@ -8,66 +8,59 @@
 - [v1.3.0.0 — Records](#v1300)
 - [v1.4.0.0 — Dashboard](#v1400)
 - [v1.5.0.0 — Data Tools](#v1500)
-- [v1.5.0.1 — Circular import + TDZ hotfix](#v1501)
+- [v1.5.0.1 — Hotfix](#v1501)
 - [v1.6.0.0 — Supabase Feedback + Dev Mode](#v1600)
-- [v1.7.0.0 — AI Assistant (deferred)](#v1700)
+- [v1.7.0.0 — Notices / Inbox](#v1700)
+- [v1.7.1.0 — AI Assistant](#v1710)
+- [v1.7.2.0 — AI History & Multi-conversation](#v1720)
 - [v1.8.0.0 — Settings & Help](#v1800)
+- [v1.9.0.0 — Onboarding beginner/expert layer](#v1900)
 - [v2.0.0.0 — Polish & Release](#v2000)
 - [Roadmap change log](#changelog)
 
 ## v1.0.x — Scaffold + Foundation
 
-Vite + TS + Tailwind + PWA + routing + shell + docs. Design system. Storage, crypto, format, hooks, providers, bootstrap.
-
 ## v1.1.0.0 — Onboarding & Lock
-
-First-run wizard, forced lock after onboarding, 4-digit PIN gate. AuthProvider + AuthGuard. Sidebar "Lock now".
 
 ## v1.2.0.0 — Wallets
 
-Wallets repo + store, 5-step progressive wizard, detail with meta grid + goal bar, archive/delete. Error code system (11 codes) + ErrorPage + Help reference tables.
-
 ## v1.3.0.0 — Records
-
-Records repo + receipts + store. List with filters, create form (inline errors, sticky bar, toasts, receipt upload, transfers), detail with inline edit + pair-aware delete + receipt viewer. Wallet audit log wired to live records.
 
 ## v1.4.0.0 — Dashboard
 
-Stats layer, summary cards, rate cards, net worth / cashflow / investment charts, recent activity, time range selector, empty state.
-
 ## v1.5.0.0 — Data Tools
 
-Full backup export (JSON), record export (CSV / JSON / XLSX / PDF with field picker + filters), full backup import (merge / replace with custom Dialog), currency plumbing (`useCurrency`), wipe-all-data on Help page.
-
-## v1.5.0.1 — Circular import + TDZ hotfix
-
-Broke circular store import (`records.store` → `wallets.store` → `auth.store`); fixed `walletId` TDZ in `RecordForm`. Hotfix on `main` only, no feature scope.
+## v1.5.0.1 — Hotfix
 
 ## v1.6.0.0 — Supabase Feedback + Dev Mode
 
-**Complete.** Supabase sidecar for beta feedback. Users submit bug reports and idea suggestions via floating action button; stored in `finx.feedback` on shared Supabase project (isolated `finx` schema, zero `cf_*` interference). Owner signs in at hidden `/dev-login` with email/password; reads inbox at `/dev` with type/handled filters, pagination, mark-handled toggle, and local app stats card.
+## v1.7.0.0 — Notices / Inbox
 
-- `src/lib/supabase.ts` — client singleton, session in `sessionStorage`
-- `src/features/feedback/` — FAB, form, submit, copy-to-clipboard fallback
-- `src/features/dev-mode/` — auth, guard, login, dashboard, API helpers
-- Admin identified via `finx.admin_users` seed + `finx.is_admin()` security-definer function
-- Full proposal: `docs/proposal-supabase-feedback.md`
-- Known gaps: no in-app delete, no rate limiting on inserts, `handled` only (no triage notes)
+Bundled in-app announcements. Sidebar badge with unread count, `/notices` page with category filters and read/dismiss state (IndexedDB-backed), dashboard top banner. Content lives in `src/features/notices/content.ts` — edit and deploy to publish a notice.
 
-## v1.7.0.0 — AI Assistant (deferred)
+## v1.7.1.0 — AI Assistant
 
-Was originally v1.6.0.0; deferred so v1.6.0.0 could prioritize real beta feedback. User-supplied API key, chat UI, presets (Groq / Gemini / OpenRouter), streaming responses, provider settings. May be reordered again based on feedback volume from v1.6.0.0.
+User-supplied API key (local IndexedDB), provider presets (Groq / Gemini / OpenRouter) + custom OpenAI-compatible endpoint, streaming chat UI, slash commands (`/report`, `/reportshort`, `/reportlong`, `/rankincome`, `/rankexpense`, `/budget`, `/trend`, `/goals`, `/wallets`, `/help`), context-aware consent (send wallet/record summary only with explicit opt-in). AI pre-fills forms for confirm-before-commit actions.
+
+## v1.7.2.0 — AI History & Multi-conversation
+
+Persist chat history to IndexedDB, add sidebar of past conversations. Deferred from v1.7.1.0 to keep the initial AI release focused.
 
 ## v1.8.0.0 — Settings & Help
 
-Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), about. **Retroactive currency migration** — convert existing wallets when settings currency changes. Full Help index + troubleshooting, replacing the temporary page. Feedback troubleshooting (Supabase paused, offline submission fallback).
+Profile, security (PIN change, password change, re-onboard), appearance, data (export/import/wipe), **local storage gauge** (navigator.storage.estimate), **check for updates** (manual PWA update check), about. **Retroactive currency migration**. Deep Help guide (indexed per feature, replaces the temporary page).
+
+## v1.9.0.0 — Onboarding beginner/expert layer
+
+First-run wizard asks beginner vs expert. Beginner → guided tutorial flow after lock. Expert → dialog listing where to find help.
 
 ## v2.0.0.0 — Polish & Release
 
-Bug sweep, a11y audit, perf pass (lazy-load Data Tools + Dev Mode to keep main bundle lean), real PWA icon set (192 / 512 / maskable PNGs), live cross-tab sync, dashboard grid gap fix, anonymous device pings for real user count (opt-in, requires privacy terms update), docs freeze.
+Bug sweep, a11y audit, perf pass (lazy-load Data Tools + Dev Mode + Notices to keep main bundle lean), real PWA icon set, live cross-tab sync, dashboard grid gap fix, opt-in anonymous device pings for real user count (requires privacy terms update), docs freeze.
 
 ## Roadmap change log
 
-- **2026-11-21** — v1.6.0.0 reordered: AI Assistant deferred to v1.7.0.0; Supabase Feedback + Dev Mode inserted as new v1.6.0.0.
-- **2026-11-21** — v1.5.0.1 hotfix inserted (circular import + TDZ).
+- **2026-11-21** — v1.6.0.0 reordered: AI Assistant deferred; Supabase Feedback + Dev Mode inserted.
+- **2026-11-21** — v1.5.0.1 hotfix inserted.
 - **2026-11-22** — v1.6.0.0 Supabase side complete. FinX app code complete after Phases A–D. Merged and tagged.
+- **2026-11-23** — Post-beta-feedback scope additions: Notice/Inbox (v1.7.0.0), Settings storage gauge + check-for-updates + deep Help (v1.8.0.0), onboarding beginner/expert layer (v1.9.0.0). AI Assistant (v1.7.1.0) gets slash commands + context-aware consent; pre-fills forms (not "clicks buttons") deferred to v1.7.1.1. Chat history + multi-conversation split to v1.7.2.0. Notices bundled, not Supabase-backed.
