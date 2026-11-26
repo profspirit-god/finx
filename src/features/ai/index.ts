@@ -29,3 +29,4 @@ export {
   hasApiKey,
 } from './lib/settings';
 export type { AISettings, AIMessage } from '@/lib/db/schema';
+export { default as AIPage } from './AIPage';
