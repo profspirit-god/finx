@@ -15,7 +15,7 @@ export const PROVIDERS: ProviderPreset[] = [
     id: 'groq',
     label: 'Groq',
     baseUrl: 'https://api.groq.com/openai/v1',
-    defaultModel: 'llama-3.3-70b-versatile',
+    defaultModel: 'openai/gpt-oss-120b',
     hint: 'Free tier available. Fast responses.',
     modelsUrl: 'https://console.groq.com/docs/models',
     signupUrl: 'https://console.groq.com/keys',
