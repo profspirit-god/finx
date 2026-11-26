@@ -13,6 +13,36 @@
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
 
+## v1.7.1.0
+
+### Added
+
+- AI Assistant (`src/features/ai/`):
+  - `lib/crypto.ts` — PBKDF2-derived AES-GCM encryption for API keys (100k iterations, SHA-256). Uses the user's PIN salt.
+  - `lib/keyCache.ts` — in-memory only cache for the derived encryption key. Cleared on page refresh for max security.
+  - `lib/providers.ts` — presets for Groq, Google Gemini, OpenRouter, and custom OpenAI-compatible endpoints.
+  - `lib/client.ts` — streaming SSE client for OpenAI-compatible chat completions.
+  - `lib/commands.ts` — slash command definitions, prompt builders, and context packer.
+  - `lib/settings.ts` — IndexedDB persistence for AI settings (provider, model, encrypted key, consent).
+  - `components/AISettingsForm.tsx` — setup/config UI. Validates and encrypts API keys before storing.
+  - `components/ChatView.tsx` — streaming chat UI. Supports slash commands via dropdown menu. Ephemeral history (cleared on tab close).
+  - `components/MessageBubble.tsx` — markdown-like bubble for user/assistant/error messages.
+  - `components/CommandMenu.tsx` — autocomplete menu when typing `/`.
+  - `components/ProviderSelector.tsx` — provider cards.
+  - `AIPage.tsx` — orchestrates first-time setup vs chat view.
+- IndexedDB schema bumped to v2 (`ai_settings`, `ai_messages`).
+- Auth store now derives and caches the AI encryption key on successful PIN unlock.
+- Slash commands: `/report`, `/reportshort`, `/reportlong`, `/rankincome`, `/rankexpense`, `/budget`, `/trend`, `/goals`, `/wallets`, `/help`.
+
+### Changed
+
+- `src/app/router/routes.tsx` — `/ai` now points to `AIPage`.
+
+### Design decisions
+
+- **In-memory only chat history:** Refreshing the page or closing the tab clears the chat log. This matches the in-memory encryption key policy. (Persistence will be added as an opt-in in v1.7.2.0).
+- **Context Consent:** Users must explicitly toggle "Allow AI to read my financial summary" to enable commands like `/report`. Context is packed locally and sent only to the provider. No raw receipt files or IDs are sent.
+
 ## v1.7.0.0
 
 ### Added
