@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Send, Trash2, Settings as SettingsIcon, StopCircle } from 'lucide-react';
 import { Button, useToast } from '@/ui';
-import { getDB } from '@/lib/db/idb';
 import { getCachedKey } from '../lib/keyCache';
 import { decryptString } from '../lib/crypto';
-import { getAISettings } from '../lib/settings';
 import { streamChat, messagesForAPI, ChatError } from '../lib/client';
+import { findCommand, packContext, COMMANDS } from '../lib/commands';
 import { randomId } from '@/lib/crypto/random';
+import { useWallets } from '@/features/wallets/hooks/useWallets';
+import { useRecords } from '@/features/records/hooks/useRecords';
 import type { AIMessage, AISettings } from '@/lib/db/schema';
 import MessageBubble from './MessageBubble';
+import CommandMenu from './CommandMenu';
 
 type Props = {
   onOpenSettings: () => void;
@@ -17,45 +19,35 @@ type Props = {
 
 export default function ChatView({ onOpenSettings, settings }: Props) {
   const toast = useToast();
+  const { wallets } = useWallets();
+  const { records } = useRecords();
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState('');
- 
   const [sending, setSending] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [showCommands, setShowCommands] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    void (async () => {
-      const stored = await loadHistory();
-      setMessages(stored);
-      setLoading(false);
-    })();
-  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages]);
 
-  const loadHistory = async (): Promise<AIMessage[]> => {
-    const db = await getDB();
-    const all = await db.getAllFromIndex('ai_messages', 'by-created');
-    return all;
-  };
-
-  const persist = async (m: AIMessage) => {
-    const db = await getDB();
-    await db.put('ai_messages', m);
-  };
-
-  const clearChat = async () => {
-    const db = await getDB();
-    await db.clear('ai_messages');
+  const clearChat = () => {
     setMessages([]);
   };
 
+  const handleInputChange = (val: string) => {
+    setInput(val);
+    if (val.startsWith('/') && !val.includes(' ')) {
+      setShowCommands(true);
+    } else {
+      setShowCommands(false);
+    }
+  };
+
   const send = async () => {
-    if (!settings || !input.trim() || sending) return;
+    if (sending) return;
+    if (!input.trim()) return;
     if (!settings.apiKeyCiphertext || !settings.apiKeyIv) {
       toast.push({ variant: 'error', title: 'No API key', message: 'Configure AI settings first.' });
       return;
@@ -78,11 +70,62 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
       return;
     }
 
+    const cmd = findCommand(input);
+    if (cmd?.id === '/help') {
+      const helpContent =
+        'Available commands:\n\n' +
+        COMMANDS.filter((c) => c.id !== '/help')
+          .map((c) => `${c.id} — ${c.description}`)
+          .join('\n');
+      const sysMsg: AIMessage = {
+        id: randomId(),
+        role: 'user',
+        content: '/help',
+        commandInvoked: '/help',
+        streaming: false,
+        error: null,
+        createdAt: Date.now(),
+      };
+      const botMsg: AIMessage = {
+        id: randomId(),
+        role: 'assistant',
+        content: helpContent,
+        commandInvoked: '/help',
+        streaming: false,
+        error: null,
+        createdAt: Date.now() + 1,
+      };
+      setMessages((m) => [...m, sysMsg, botMsg]);
+      setInput('');
+      return;
+    }
+
+    let contextText: string | null = null;
+    if (settings.contextConsent && cmd) {
+      const currency = wallets.find((w) => !w.archived)?.currency ?? 'USD';
+      contextText = packContext(wallets, records, currency);
+    } else if (
+      settings.contextConsent &&
+      !cmd &&
+      (input.toLowerCase().includes('report') ||
+        input.toLowerCase().includes('spend') ||
+        input.toLowerCase().includes('income'))
+    ) {
+      const currency = wallets.find((w) => !w.archived)?.currency ?? 'USD';
+      contextText = packContext(wallets, records, currency);
+    }
+
+    const effectivePrompt = cmd
+      ? cmd.buildPrompt(contextText)
+      : contextText
+        ? `${input.trim()}\n\nContext:\n${contextText}`
+        : input.trim();
+
     const userMsg: AIMessage = {
       id: randomId(),
       role: 'user',
       content: input.trim(),
-      commandInvoked: null,
+      commandInvoked: cmd ? cmd.id : null,
       streaming: false,
       error: null,
       createdAt: Date.now(),
@@ -91,7 +134,7 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
       id: randomId(),
       role: 'assistant',
       content: '',
-      commandInvoked: null,
+      commandInvoked: cmd ? cmd.id : null,
       streaming: true,
       error: null,
       createdAt: Date.now() + 1,
@@ -99,12 +142,15 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
 
     setMessages((m) => [...m, userMsg, assistantMsg]);
     setInput('');
+    setShowCommands(false);
     setSending(true);
-    await Promise.all([persist(userMsg), persist(assistantMsg)]);
 
     abortRef.current = new AbortController();
     const history = [...messages, userMsg];
     const apiMessages = messagesForAPI(history);
+    if (apiMessages.length > 0) {
+      apiMessages[apiMessages.length - 1] = { role: 'user', content: effectivePrompt };
+    }
 
     try {
       await streamChat({
@@ -125,27 +171,21 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (!last) return prev;
-        const final = { ...last, streaming: false };
-        void persist(final);
-        return [...prev.slice(0, -1), final];
+        return [...prev.slice(0, -1), { ...last, streaming: false }];
       });
     } catch (err) {
       if ((err as Error).name === 'AbortError') {
         setMessages((prev) => {
           const last = prev[prev.length - 1];
           if (!last) return prev;
-          const final = { ...last, streaming: false };
-          void persist(final);
-          return [...prev.slice(0, -1), final];
+          return [...prev.slice(0, -1), { ...last, streaming: false }];
         });
       } else {
         const msg = err instanceof ChatError ? err.message : (err as Error).message;
         setMessages((prev) => {
           const last = prev[prev.length - 1];
           if (!last) return prev;
-          const final = { ...last, streaming: false, error: msg };
-          void persist(final);
-          return [...prev.slice(0, -1), final];
+          return [...prev.slice(0, -1), { ...last, streaming: false, error: msg }];
         });
       }
     } finally {
@@ -155,8 +195,6 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
   };
 
   const stop = () => abortRef.current?.abort();
-
-  if (loading) return <div className="p-8 text-center text-dim text-sm">Loading chat…</div>;
 
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] max-w-3xl">
@@ -176,7 +214,12 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
         {messages.length === 0 && (
           <div className="text-center text-dim text-sm py-12">
             <p>Ask anything about your finances.</p>
-            <p className="text-xs text-mute mt-2">Try: "How much did I spend last month?"</p>
+            <p className="text-xs text-mute mt-2">
+              Type <code className="text-gold-400">/</code> to see commands, or ask a question directly.
+            </p>
+            <p className="text-xs text-mute mt-1">
+              Chat is cleared when you close the tab. Save anything useful externally.
+            </p>
           </div>
         )}
         {messages.map((m) => (
@@ -184,30 +227,43 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
         ))}
       </div>
 
-      <div className="glass-strong p-3 mt-3 flex items-end gap-2">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Message the assistant…"
-          rows={1}
-          maxLength={2000}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              void send();
-            }
-          }}
-          className="flex-1 bg-transparent border-0 outline-none resize-none text-sm px-2 py-2 max-h-32"
-        />
-        {sending ? (
-          <Button variant="danger" onClick={stop} leftIcon={<StopCircle size={14} />}>
-            Stop
-          </Button>
-        ) : (
-          <Button onClick={() => void send()} disabled={!input.trim()} leftIcon={<Send size={14} />}>
-            Send
-          </Button>
+      <div className="relative glass-strong p-3 mt-3">
+        {showCommands && (
+          <CommandMenu
+            query={input}
+            onSelect={(cmd) => {
+              setInput(cmd + ' ');
+              setShowCommands(false);
+            }}
+            onClose={() => setShowCommands(false)}
+          />
         )}
+        <div className="flex items-end gap-2">
+          <textarea
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value)}
+            placeholder="Message the assistant… (type / for commands)"
+            rows={1}
+            maxLength={2000}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                void send();
+              }
+              if (e.key === 'Escape') setShowCommands(false);
+            }}
+            className="flex-1 bg-transparent border-0 outline-none resize-none text-sm px-2 py-2 max-h-32"
+          />
+          {sending ? (
+            <Button variant="danger" onClick={stop} leftIcon={<StopCircle size={14} />}>
+              Stop
+            </Button>
+          ) : (
+            <Button onClick={() => void send()} disabled={!input.trim()} leftIcon={<Send size={14} />}>
+              Send
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

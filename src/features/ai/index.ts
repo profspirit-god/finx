@@ -28,5 +28,11 @@ export {
   clearApiKey,
   hasApiKey,
 } from './lib/settings';
+export {
+  COMMANDS,
+  findCommand,
+  packContext,
+} from './lib/commands';
+export type { CommandDefinition } from './lib/commands';
 export type { AISettings, AIMessage } from '@/lib/db/schema';
 export { default as AIPage } from './AIPage';
