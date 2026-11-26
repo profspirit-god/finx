@@ -14,6 +14,18 @@ import type { Notice } from './types';
  *    available in v1.7.0.0 and is not planned.
  */
 export const NOTICES: Notice[] = [
+    {
+    id: 'n-2026-11-26-ai-assistant',
+    version: '1.7.1.0',
+    date: new Date('2026-11-26T12:00:00Z').getTime(),
+    category: 'feature',
+    title: 'AI Assistant is here',
+    body:
+      'You can now chat with an AI assistant right inside FinX. Bring your own API key from Groq, Google Gemini, or OpenRouter — or any OpenAI-compatible provider. Use slash commands like /report, /rankexpense, or /budget to get instant summaries of your finances. Your API key is encrypted and stays on this device. Your wallet and record data is only sent if you explicitly enable "context consent" in AI settings.',
+    actionLabel: 'Open AI Assistant',
+    actionHref: '/ai',
+    dismissable: true,
+  },
   {
     id: 'n-2026-11-23-feedback-live',
     version: '1.6.0.0',
