@@ -79,6 +79,17 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     if (ok) {
       setSessionUnlocked();
       set({ state: { status: 'unlocked', user: s.user } });
+
+      // Derive the AI encryption key from the just-verified PIN and cache it
+      // in memory. Never persisted. Cleared on page refresh.
+      try {
+        const { deriveEncryptionKey } = await import('@/features/ai/lib/crypto');
+        const { cacheKey } = await import('@/features/ai/lib/keyCache');
+        const key = await deriveEncryptionKey(pin, s.user.pinSalt);
+        cacheKey(key);
+      } catch (err) {
+        console.warn('[FinX] Could not derive AI encryption key:', err);
+      }
     }
     return ok;
   },
