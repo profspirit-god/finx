@@ -10,6 +10,7 @@ import { DataToolsPage } from '@/features/data-tools';
 import { useState } from 'react';
 import { DevGuard, DevLogin, DevDashboard } from '@/features/dev-mode';
 import { NoticesPage } from '@/features/notices';
+import { AIPage } from '@/features/ai';
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -167,7 +168,7 @@ export const routes: { path: string; element: ReactElement }[] = [
   { path: '/records/new',  element: <RecordForm /> },
   { path: '/records/:id',  element: <RecordDetail /> },
   { path: '/data-tools',   element: <DataToolsPage /> },
-  { path: '/ai',           element: <Placeholder label="AI Assistant" /> },
+  { path: '/ai',  element: <AIPage /> },
   { path: '/settings',     element: <Placeholder label="Settings" /> },
   { path: '/notices',    element: <NoticesPage /> },
   { path: '/help',         element: <HelpPage /> },
