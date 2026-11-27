@@ -36,3 +36,16 @@ export {
 export type { CommandDefinition } from './lib/commands';
 export type { AISettings, AIMessage } from '@/lib/db/schema';
 export { default as AIPage } from './AIPage';
+export {
+  listConversations,
+  getConversation,
+  createConversation,
+  updateConversation,
+  deleteConversation,
+  listMessages,
+  saveMessage,
+  deleteMessage,
+  clearAllConversations,
+  deriveTitle,
+} from './lib/conversations';
+export type { AIConversation } from '@/lib/db/schema';
