@@ -145,12 +145,18 @@ export default function AISettingsForm({ onClose, onSaved }: Props) {
         </p>
       </div>
 
-      <div className="border-t border-[var(--line)] pt-4">
+      <div className="border-t border-[var(--line)] pt-4 space-y-4">
         <Switch
           checked={settings.contextConsent}
           onChange={(v) => setSettings({ ...settings, contextConsent: v })}
           label="Allow AI to read my financial summary"
           hint="Sends wallet names, balances, and recent transaction summaries to the AI. Enables commands like /report."
+        />
+        <Switch
+          checked={settings.saveHistory}
+          onChange={(v) => setSettings({ ...settings, saveHistory: v })}
+          label="Save chat history to this device"
+          hint="Keeps past conversations in the app. If off, chat clears when you close the tab."
         />
       </div>
 

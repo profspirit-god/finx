@@ -61,5 +61,6 @@ export const DEFAULT_AI_SETTINGS: AISettings = {
   apiKeyCiphertext: null,
   apiKeyIv: null,
   contextConsent: false,
+  saveHistory: false,
   updatedAt: 0,
 };

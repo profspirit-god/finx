@@ -15,10 +15,10 @@ import CommandMenu from './CommandMenu';
 type Props = {
   onOpenSettings: () => void;
   settings: AISettings;
+  saveHistory: boolean; // NEW
 };
 
-export default function ChatView({ onOpenSettings, settings }: Props) {
-  const toast = useToast();
+export default function ChatView({ onOpenSettings, settings, saveHistory }: Props) {  const toast = useToast();
   const { wallets } = useWallets();
   const { records } = useRecords();
   const [messages, setMessages] = useState<AIMessage[]>([]);
@@ -79,6 +79,7 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
           .join('\n');
       const sysMsg: AIMessage = {
         id: randomId(),
+        conversationId: 'default',
         role: 'user',
         content: '/help',
         commandInvoked: '/help',
@@ -88,6 +89,7 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
       };
       const botMsg: AIMessage = {
         id: randomId(),
+        conversationId: 'default',
         role: 'assistant',
         content: helpContent,
         commandInvoked: '/help',
@@ -123,6 +125,7 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
 
     const userMsg: AIMessage = {
       id: randomId(),
+      conversationId: 'default',
       role: 'user',
       content: input.trim(),
       commandInvoked: cmd ? cmd.id : null,
@@ -132,6 +135,7 @@ export default function ChatView({ onOpenSettings, settings }: Props) {
     };
     const assistantMsg: AIMessage = {
       id: randomId(),
+      conversationId: 'default',
       role: 'assistant',
       content: '',
       commandInvoked: cmd ? cmd.id : null,

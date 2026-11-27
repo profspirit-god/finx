@@ -52,6 +52,7 @@ export default function AIPage() {
       <ChatView
         onOpenSettings={() => setShowSettings(true)}
         settings={settings!}
+        saveHistory={settings!.saveHistory}
       />
       <Dialog
         open={showSettings}
