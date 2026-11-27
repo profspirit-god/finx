@@ -33,8 +33,14 @@ Source of truth for any AI working on FinX. Read only the section you need.
 
 - Long-lived: `main` (protected), `develop` (integration).
 - Short-lived: `feat/*`, `fix/*`, `chore/*`, `release/vX.Y.Z.W`.
-- Version: `MAJOR.MINOR.PATCH.CLEANUP`.
-- Tag releases on `main`.
+- Version format: `MAJOR.MINOR.PATCH.CLEANUP-SUFFIX` where SUFFIX is:
+  - `-alpha` — internal prototype (v1.0.0.0 through v1.6.0.0 — historical)
+  - `-beta` — shared with beta testers (v1.7.0.0 through end of refinement)
+  - `-rc` — release candidate (feature complete, polishing)
+  - (no suffix) — stable release (v2.0.0.0+)
+- Tag releases on `main` with the full version including suffix: `v1.7.2.0-beta`.
+- Update `package.json` `version` to match the tag (with suffix).
+- Update the sidebar footer version label in `src/layout/Sidebar/Sidebar.tsx` to match.
 
 ## 4. Folder Tree
 
