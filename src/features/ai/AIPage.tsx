@@ -10,6 +10,7 @@ export default function AIPage() {
   const [settings, setSettings] = useState<AISettings | null>(null);
   const [configured, setConfigured] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const reload = async () => {
     const [s, has] = await Promise.all([getAISettings(), hasApiKey()]);
@@ -41,7 +42,10 @@ export default function AIPage() {
           </p>
         </div>
         <div className="glass-strong p-5">
-          <AISettingsForm onSaved={() => void reload()} />
+          <AISettingsForm
+            onSaved={() => void reload()}
+            onHistoryCleared={() => setRefreshKey((k) => k + 1)}
+          />
         </div>
       </div>
     );
@@ -50,8 +54,10 @@ export default function AIPage() {
   return (
     <>
       <ChatView
+        key={refreshKey}
         onOpenSettings={() => setShowSettings(true)}
         settings={settings!}
+        saveHistory={settings!.saveHistory}
       />
       <Dialog
         open={showSettings}
@@ -59,13 +65,16 @@ export default function AIPage() {
         title="AI Settings"
         size="lg"
       >
-        <AISettingsForm
-          onClose={() => setShowSettings(false)}
-          onSaved={() => {
-            setShowSettings(false);
-            void reload();
-          }}
-        />
+        <div className="max-h-[70vh] overflow-y-auto pr-2 -mr-2">
+          <AISettingsForm
+            onClose={() => setShowSettings(false)}
+            onSaved={() => {
+              setShowSettings(false);
+              void reload();
+            }}
+            onHistoryCleared={() => setRefreshKey((k) => k + 1)}
+          />
+        </div>
       </Dialog>
     </>
   );

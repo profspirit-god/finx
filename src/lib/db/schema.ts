@@ -13,11 +13,6 @@ export type StoredReceipt = {
   createdAt: number;
 };
 
-/**
- * AI provider settings. The API key is stored encrypted as `apiKeyCiphertext`
- * (base64) plus `apiKeyIv` (base64). Decryption requires the PIN-derived key
- * cached in sessionStorage after unlock.
- */
 export type AISettings = {
   id: 'ai_settings';
   provider: 'groq' | 'gemini' | 'openrouter' | 'custom';
@@ -26,15 +21,20 @@ export type AISettings = {
   apiKeyCiphertext: string | null;
   apiKeyIv: string | null;
   contextConsent: boolean;
+  saveHistory: boolean;
   updatedAt: number;
 };
 
-/**
- * Chat messages. `role` is 'user' or 'assistant'. Streaming partials are
- * stored as assistant messages with `streaming: true` until complete.
- */
+export type AIConversation = {
+  id: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
+};
+
 export type AIMessage = {
   id: string;
+  conversationId: string;
   role: 'user' | 'assistant';
   content: string;
   commandInvoked: string | null;
@@ -71,12 +71,17 @@ export interface FinXDB extends DBSchema {
     key: string;
     value: AISettings;
   };
+  ai_conversations: {
+    key: string;
+    value: AIConversation;
+    indexes: { 'by-updated': number };
+  };
   ai_messages: {
     key: string;
     value: AIMessage;
-    indexes: { 'by-created': number };
+    indexes: { 'by-conversation': string; 'by-created': number };
   };
 }
 
 export const DB_NAME = 'finx';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;

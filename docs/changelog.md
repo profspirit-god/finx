@@ -13,6 +13,30 @@
 - [v1.0.0.1](#v1001)
 - [v1.0.0.0](#v1000)
 
+## v1.7.2.0-beta
+
+### Added
+
+- **Multi-conversation AI history** (`src/features/ai/`):
+  - `lib/conversations.ts` — CRUD for conversations and messages, title derivation, clear-all.
+  - **Opt-in persistence:** The "Save chat history" toggle in Settings now actually saves conversations to IndexedDB (v3 schema). Off by default (ephemeral, matches key security).
+  - **Conversation sidebar:** When history is on, a left panel shows past chats. Click to switch, "New chat" to start fresh, auto-titles from the first message.
+  - **Settings dialog:** Scrollable, uses the app's custom `<Dialog>` for "Clear all saved conversations" (no more native browser confirm).
+- **IndexedDB schema v3:** Added `ai_conversations` store, linked `ai_messages` to conversations via `conversationId`, added `by-conversation` index. Migration wipes any existing ephemeral test messages (acceptable for beta).
+- **New docs:** `docs/versioning.md` — defines the alpha/beta/rc/stable lifecycle suffixes.
+
+### Changed
+
+- `AIPage` passes `saveHistory` to `ChatView` and uses a `refreshKey` to force remount when history is cleared.
+- Version format changed to include lifecycle suffixes (e.g., `-beta`). Historical tags remain as-is.
+- Sidebar footer version label updated to `v1.7.2.0-beta`.
+
+### Design decisions
+
+- **No retroactive migration of old messages:** v2 `ai_messages` were ephemeral test data. Wiped cleanly rather than migrated.
+- **Chat titles** are derived from the first user message (truncated at 40 chars), or `/help` → "Help". They can't be renamed yet (future).
+- **Clear history** only deletes conversations and messages — AI settings (API key, toggles) are preserved.
+
 ## v1.7.1.0
 
 ### Added

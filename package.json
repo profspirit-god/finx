@@ -1,7 +1,7 @@
 {
   "name": "finx",
   "private": true,
-  "version": "1.7.1.0",
+  "version": "1.7.2.0-beta",
   "type": "module",
   "description": "FinX — minimalist glassmorphism personal finance. By profspirit-god studio 2026.",
   "scripts": {
