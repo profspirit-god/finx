@@ -15,8 +15,20 @@ import type { Notice } from './types';
  */
 export const NOTICES: Notice[] = [
     {
+    id: 'n-2026-11-27-ai-history',
+    version: '1.7.2.0-beta',
+    date: new Date('2026-11-27T12:00:00Z').getTime(),
+    category: 'feature',
+    title: 'AI Assistant now remembers your chats',
+    body:
+      'You can now save your AI conversations across sessions. Turn on "Save chat history to this device" in AI Settings and your past conversations will appear in a sidebar — switch between them anytime. Off by default: if you don\'t enable it, chat clears when you close the tab. Your data stays on this device.',
+    actionLabel: 'Open AI Assistant',
+    actionHref: '/ai',
+    dismissable: true,
+    },
+    {
     id: 'n-2026-11-26-ai-assistant',
-    version: '1.7.1.0',
+    version: '1.7.1.0-beta',
     date: new Date('2026-11-26T12:00:00Z').getTime(),
     category: 'feature',
     title: 'AI Assistant is here',
@@ -28,7 +40,7 @@ export const NOTICES: Notice[] = [
   },
   {
     id: 'n-2026-11-23-feedback-live',
-    version: '1.6.0.0',
+    version: '1.6.0.0-alpha',
     date: new Date('2026-11-23T00:00:00Z').getTime(),
     category: 'feature',
     title: 'Bug reports and ideas are live',
@@ -38,7 +50,7 @@ export const NOTICES: Notice[] = [
   },
   {
     id: 'n-2026-11-23-dashboard',
-    version: '1.4.0.0',
+    version: '1.4.0.0-alpha',
     date: new Date('2026-11-22T00:00:00Z').getTime(),
     category: 'feature',
     title: 'Dashboard is here',
@@ -50,7 +62,7 @@ export const NOTICES: Notice[] = [
   },
   {
     id: 'n-2026-11-22-records',
-    version: '1.3.0.0',
+    version: '1.3.0.0-alpha',
     date: new Date('2026-11-22T00:00:00Z').getTime(),
     category: 'feature',
     title: 'Record money movements',
@@ -62,7 +74,7 @@ export const NOTICES: Notice[] = [
   },
   {
     id: 'n-2026-11-21-data-tools',
-    version: '1.5.0.0',
+    version: '1.5.0.0-alpha',
     date: new Date('2026-11-21T00:00:00Z').getTime(),
     category: 'feature',
     title: 'Full backups and exports',
@@ -74,7 +86,7 @@ export const NOTICES: Notice[] = [
   },
   {
     id: 'n-2026-11-20-beta',
-    version: '1.6.0.0',
+    version: '1.6.0.0-alpha',
     date: new Date('2026-11-20T00:00:00Z').getTime(),
     category: 'announcement',
     title: 'FinX beta — thank you',
