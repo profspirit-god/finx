@@ -99,7 +99,7 @@ export default function Sidebar() {
           ))}
         </nav>
         <div className="p-3 text-[10px] text-mute">
-          {expanded ? 'v1.6.0.0 — profspirit-god studio' : '©'}
+          {expanded ? 'v1.7.2.0-beta — profspirit-god studio' : '©'}
         </div>
       </motion.aside>
     </>
